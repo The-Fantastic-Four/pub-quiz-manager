@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+# Transpiler folders and files
+/lib
+src/bundle.js
