@@ -2,6 +2,7 @@ const firebase = require('firebase');
 const questions = require('./questions');
 const manageQuiz = require('./manageQuiz');
 const quizOverview = require('./quizOverview');
+const newQuiz = require('./newQuiz');
 const username = 'admin';
 
 // Initialize Firebase
@@ -27,13 +28,19 @@ function listenToWhichQuiz(quizzes) {
     navbar.removeChild(navbar.firstChild);
   }
   Object.keys(quizzes).forEach((quizName) => {
-    const button = document.createElement('Button');
+    const button = document.createElement('button');
     button.addEventListener('click', () => {
       initializeQuiz(quizName);
     });
     button.appendChild(document.createTextNode(quizName));
     navbar.appendChild(button);
   });
+  const button = document.createElement('button');
+  button.addEventListener('click', () => {
+    newQuiz.init(database, initializeQuiz, username);
+  });
+  button.appendChild(document.createTextNode('Nýtt quiz'));
+  navbar.appendChild(button);
 }
 
 // Updates teams and quizzes

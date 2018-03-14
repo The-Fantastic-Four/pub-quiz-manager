@@ -25,9 +25,6 @@ const manageQuiz = (function() {
     header.setAttribute('class', 'heading--two');
     header.appendChild(document.createTextNode('Manage quiz'));
     section.appendChild(header);
-    //while (section.firstChild) {
-    //  section.removeChild(section.firstChild)
-    //}
     const prevButton = document.createElement('button');
     prevButton.addEventListener('click', () => {
       previousQuestion();

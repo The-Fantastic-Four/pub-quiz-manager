@@ -20,7 +20,14 @@ const questions = (function () {
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
     }
-    Object.keys(questions).forEach((questionName) => {
+    Object.keys(questions).sort((a, b) => {
+      if (questions[a] < questions[b]) {
+        return -1;
+      } else if (questions[a] > questions[b]) {
+        return 1;
+      }
+      return 0;
+    }).forEach((questionName) => {
       const questionRef = database.ref(`questions/${questionName}/question`);
       questionRef.on('value', (snapshot) => {
         const li = document.createElement('li');

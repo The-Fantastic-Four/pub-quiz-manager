@@ -13,7 +13,7 @@ const quizOverview = (function () {
     const header = document.createElement('h2');
     const ul = document.createElement('ul');
     header.setAttribute('class', 'heading--two');
-    header.appendChild(document.createTextNode('Participating teams'));
+    header.appendChild(document.createTextNode('Liðin'));
     section.appendChild(header);
     ul.setAttribute('id', 'teams');
     section.appendChild(ul);
