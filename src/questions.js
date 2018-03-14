@@ -6,7 +6,17 @@ const questions = (function () {
 
   // Create list of questions
   function updateQuestionList(questions) {
-    const ul = document.getElementById('quiz');
+    const section = document.querySelector('.section__quiz');
+    while (section.firstChild) {
+      section.removeChild(section.firstChild);
+    }
+    const header = document.createElement('h2');
+    const ul = document.createElement('ul');
+    header.setAttribute('class', 'heading--two');
+    header.appendChild(document.createTextNode('Quiz'));
+    section.appendChild(header);
+    ul.setAttribute('id', 'quiz');
+    section.appendChild(ul);
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
     }
@@ -18,6 +28,10 @@ const questions = (function () {
         ul.appendChild(li);
       });
     });
+  }
+
+  function addQuestion() {
+    
   }
 
   function init(db, q) {

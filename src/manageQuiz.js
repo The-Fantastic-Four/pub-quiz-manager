@@ -9,38 +9,39 @@ const manageQuiz = (function() {
 
   // Change current question
   function nextQuestion() {
-    //console.log("BEGIN " + currentQuestion + ' +1 ');
     currRef.set(currentQuestion + 1);
-    //console.log("END " + currentQuestion + ' +1 ');
   }
 
   function previousQuestion() {
-    //console.log("BEGIN " + currentQuestion + ' -1 ');
     currRef.set(currentQuestion - 1);
-    //console.log("END " + currentQuestion + ' -1 ');
   }
   
   function selectQuestion() {
-    const div = document.querySelector('.manager');
-    while (div.firstChild) {
-      div.removeChild(div.firstChild)
+    const section = document.querySelector('.section__manager');
+    while (section.firstChild) {
+      section.removeChild(section.firstChild);
     }
+    const header = document.createElement('h2');
+    header.setAttribute('class', 'heading--two');
+    header.appendChild(document.createTextNode('Manage quiz'));
+    section.appendChild(header);
+    //while (section.firstChild) {
+    //  section.removeChild(section.firstChild)
+    //}
     const prevButton = document.createElement('button');
     prevButton.addEventListener('click', () => {
-      console.log('NO REALLY IT IS');
-      database.ref(`quizzes/${quiz}/currentQuestion`).set(9);
+      previousQuestion();
     });
     prevButton.appendChild(document.createTextNode('Fyrri spurning'));
-    div.appendChild(prevButton);
+    section.appendChild(prevButton);
     currQuest = document.createElement('span');
-    div.appendChild(currQuest);
+    section.appendChild(currQuest);
     const nextButton = document.createElement('button');
     nextButton.addEventListener('click', () => {
-      console.log('THIS IS HAPPENING');
-      database.ref(`quizzes/${quiz}/currentQuestion`).set(4);
+      nextQuestion();
     });
     nextButton.appendChild(document.createTextNode('Næsta spurning'));
-    div.appendChild(nextButton);
+    section.appendChild(nextButton);
   }
 
   function init(db, q) {
@@ -49,9 +50,7 @@ const manageQuiz = (function() {
     selectQuestion();
     currRef = database.ref(`quizzes/${quiz}/currentQuestion`);
     currRef.on('value', (snapshot) => {
-      console.log("NEW VAL BEGIN " + snapshot.val());
       currentQuestion = snapshot.val();
-      console.log("NEW VAL END " + snapshot.val());
       while (currQuest.firstChild) {
         currQuest.removeChild(currQuest.firstChild)
       }
