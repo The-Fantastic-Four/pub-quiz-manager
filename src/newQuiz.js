@@ -1,4 +1,9 @@
-const newQuiz = (function () {
+/**
+ * Allows host to add new quiz
+ * 
+ * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
+ * 14. march 2018
+ */const newQuiz = (function () {
 
   let database;
   let quiz;

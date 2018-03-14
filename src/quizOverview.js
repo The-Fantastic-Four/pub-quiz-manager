@@ -1,4 +1,9 @@
-
+/**
+ * Shows status of participants while quiz is running
+ * 
+ * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
+ * 14. march 2018
+ */
 const quizOverview = (function () {
 
   let database;

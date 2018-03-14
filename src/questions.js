@@ -1,4 +1,9 @@
-
+/**
+ * Shows the questions in the quiz
+ * 
+ * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
+ * 14. march 2018
+ */
 const questions = (function () {
   
   let database;
@@ -13,7 +18,7 @@ const questions = (function () {
     const header = document.createElement('h2');
     const ul = document.createElement('ul');
     header.setAttribute('class', 'heading--two');
-    header.appendChild(document.createTextNode('Quiz'));
+    header.appendChild(document.createTextNode('Spurningar'));
     section.appendChild(header);
     ul.setAttribute('id', 'quiz');
     section.appendChild(ul);
@@ -36,11 +41,11 @@ const questions = (function () {
       });
     });
   }
-
   function addQuestion() {
     
   }
 
+  // Initializes questions
   function init(db, q) {
     database = db;
     quiz = q;

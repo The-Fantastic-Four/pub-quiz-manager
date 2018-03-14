@@ -1,3 +1,9 @@
+/**
+ * Initializes the quiz
+ * 
+ * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
+ * 14. march 2018
+ */
 const firebase = require('firebase');
 const questions = require('./questions');
 const manageQuiz = require('./manageQuiz');
@@ -15,6 +21,7 @@ const config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 
+// Fires up quizzes
 function initializeQuiz(quizName) {
   questions.init(database, quizName);
   quizOverview.init(database, quizName);
@@ -50,8 +57,4 @@ document.addEventListener('DOMContentLoaded', () => {
   quizzesRef.on('value', (snapshot) => {
     listenToWhichQuiz(snapshot.val());
   });
-  /*quizRef.on('value', (snapshot) => {
-    updateTeams(snapshot.val().teams);
-    updateQuestionList(snapshot.val().questions);
-  });*/
 });

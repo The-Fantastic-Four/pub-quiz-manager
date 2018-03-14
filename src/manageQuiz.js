@@ -1,4 +1,9 @@
-
+/**
+ * Manages quiz while running
+ * 
+ * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
+ * 14. march 2018
+ */
 const manageQuiz = (function() {
 
   let database;
@@ -23,7 +28,7 @@ const manageQuiz = (function() {
     }
     const header = document.createElement('h2');
     header.setAttribute('class', 'heading--two');
-    header.appendChild(document.createTextNode('Manage quiz'));
+    header.appendChild(document.createTextNode('Möndla með quiz'));
     section.appendChild(header);
     const prevButton = document.createElement('button');
     prevButton.addEventListener('click', () => {
