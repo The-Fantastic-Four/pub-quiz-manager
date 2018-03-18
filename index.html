@@ -20,10 +20,11 @@
             signInSuccessUrl: 'management.html',
             signInOptions: [
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.FacebookAuthProvider.PROVIDER_ID,
                 firebase.auth.EmailAuthProvider.PROVIDER_ID
             ],
             // Terms of service url.
-            tosUrl: '<your-tos-url>'
+            tosUrl: 'termsOfService.html'
         };
 
         // Initialize the FirebaseUI Widget using Firebase.
