@@ -113,8 +113,14 @@ const questions = (function () {
     database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
       function(snapshot) {
         var updates = {};
-        updates['/questions/' + newPostKey] = questionData;
-        updates['/quizzes/'+quiz+'/questions/'+newPostKey] = snapshot.numChildren()+1;
+        if(questionData.type === "blank" || questionData.question === ""){
+          updates['/quizzes/'+quiz+'/questions/-L8w3iKD9lo_KonT8e2F'] = snapshot.numChildren()+1;
+        }
+        else{
+          updates['/questions/' + newPostKey] = questionData;
+          updates['/quizzes/'+quiz+'/questions/'+newPostKey] = snapshot.numChildren()+1;
+        }
+        
         database.ref().update(updates);
       }
     );   
