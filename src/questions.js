@@ -34,10 +34,17 @@ const questions = (function () {
       }
       return 0;
     }).forEach((questionName) => {
-      const questionRef = database.ref(`questions/${questionName}/question`);
+      const questionRef = database.ref(`questions/${questionName}`);
       questionRef.on('value', (snapshot) => {
+        const question = snapshot.val();
+
         const li = document.createElement('li');
-        li.appendChild(document.createTextNode(snapshot.val()+" "));
+
+        if (question['type'] === 'blank') {
+          li.appendChild(document.createTextNode("Spyrill les spurningu upp "));
+        } else if (question['type'] === 'text') {
+          li.appendChild(document.createTextNode(question['question']+" "));
+        }
 
         const deleteButton = document.createElement('button');
         deleteButton.addEventListener('click', () => {
@@ -125,22 +132,10 @@ const questions = (function () {
     database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
       function(snapshot) {
         var updates = {};
-        // If the question to be added is a "blank" question (empty question or chosen
-        // "blank" in the type of the question). Only need to add the pre-existing blank
-        // question and add an appropriate number to the question (to indicate order).
-        if(questionData.type === "blank" || questionData.question === ""){
-          if(!snapshot.hasChild('-L8w3iKD9lo_KonT8e2F'))
-            updates['/quizzes/'+quiz+'/questions/-L8w3iKD9lo_KonT8e2F'] = snapshot.numChildren()+1;
-          else{
-            alert("Það er aðeins hægt að hafa eina tóma spurningu eins og stendur.")
-          }
-        }
         // Create the question and add it to the quiz with appropriate order number.
-        else{
-          updates['/questions/'+newPostKey] = questionData;
-          updates['/quizzes/'+quiz+'/questions/'+newPostKey] = snapshot.numChildren()+1;
-        }
-        
+        updates['/questions/'+newPostKey] = questionData;
+        updates['/quizzes/'+quiz+'/questions/'+newPostKey] = snapshot.numChildren()+1;
+
         database.ref().update(updates);
       }
     );   
