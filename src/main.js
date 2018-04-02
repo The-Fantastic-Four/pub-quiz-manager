@@ -39,8 +39,6 @@ firebase.auth().onAuthStateChanged(function(user){
     logoutButton.appendChild(document.createTextNode("Útskráning"));
     el.appendChild(logoutButton);
 
-    console.log(user.displayName+" is signed in.");
-
     getQuizzes(user.uid);
   }
   // When not signed in.
