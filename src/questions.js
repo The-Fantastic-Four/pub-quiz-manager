@@ -93,6 +93,7 @@ const questions = (function () {
 
         addQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
         section.appendChild(addQuestionButton);
+        addPredefinedQuestionGUI();
       }
     );  
   }
@@ -114,7 +115,11 @@ const questions = (function () {
       function(snapshot) {
         var updates = {};
         if(questionData.type === "blank" || questionData.question === ""){
-          updates['/quizzes/'+quiz+'/questions/-L8w3iKD9lo_KonT8e2F'] = snapshot.numChildren()+1;
+          if(!snapshot.hasChild('-L8w3iKD9lo_KonT8e2F'))
+            updates['/quizzes/'+quiz+'/questions/-L8w3iKD9lo_KonT8e2F'] = snapshot.numChildren()+1;
+          else{
+            alert("Það er aðeins hægt að hafa eina tóma spurningu eins og stendur.")
+          }
         }
         else{
           updates['/questions/' + newPostKey] = questionData;
@@ -124,6 +129,67 @@ const questions = (function () {
         database.ref().update(updates);
       }
     );   
+  }
+
+  // Creates the GUI elements for adding a predefined question
+  //
+  // return the GUI elements for adding a predefined question
+  function addPredefinedQuestionGUI(){
+    const section = document.querySelector('.section__quiz');
+
+    const header = document.createElement('p');
+    header.appendChild(document.createTextNode("Bæta við út gefni spurningu: "));
+    section.appendChild(header);
+
+    const preDefinedquestionLabel = document.createElement('label');
+    preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion'); 
+    preDefinedquestionLabel.appendChild(document.createTextNode("Spurning: "));
+    section.appendChild(preDefinedquestionLabel);
+
+    database.ref('/questions/').once('value').then(
+      function(snapshot) {
+        // Create and append select list
+        var selectList = document.createElement("select");
+        selectList.id = "input__predefinedQuestion";
+        section.appendChild(selectList);
+
+        // Create and append the options
+        for (var key in snapshot.val()) {
+            if(!snapshot.val()[key].isPrivate){
+              var option = document.createElement("option");
+              option.value = key;
+              option.text = snapshot.val()[key].question;
+              selectList.appendChild(option);
+            }
+        }
+
+        const addPreDefinedQuestionButton = document.createElement('button');
+        addPreDefinedQuestionButton.addEventListener('click', () => {
+          addPredefinedQuestion();
+        });
+        addPreDefinedQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
+        section.appendChild(addPreDefinedQuestionButton);
+      }
+    );  
+  }
+
+  // Adds the predefined question to the quiz
+  //
+  // return The addition of the predefined question to the quiz question list.
+  function addPredefinedQuestion(){
+    // Insert the data into the database on succesful promise
+    database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
+      function(snapshot) {
+        var updates = {};
+        if(!snapshot.hasChild(document.getElementById("input__predefinedQuestion").value)){
+          updates['/quizzes/'+quiz+'/questions/'+document.getElementById("input__predefinedQuestion").value] = snapshot.numChildren()+1;
+          database.ref().update(updates);
+        }
+        else{
+          alert("Spurning er nú þegar í þessu quizzi.")
+        }
+      }
+    );
   }
 
   // Initializes questions
