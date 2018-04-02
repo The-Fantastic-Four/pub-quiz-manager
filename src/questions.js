@@ -56,7 +56,6 @@ const questions = (function () {
         ul.appendChild(li);
       });
     });
-    addQuestionGUI();
   }
 
   // Creates the GUI elements for creating a new question
@@ -93,27 +92,26 @@ const questions = (function () {
     typeLabel.appendChild(document.createTextNode("Tegund spurningar: "));
     section.appendChild(typeLabel);
 
+    // Create and append select list
+    var selectList = document.createElement("select");
+    selectList.id = "input__questionType";
+    section.appendChild(selectList);
+
     database.ref('/questionTypes').once('value').then(
       function(snapshot) {
-        // Create and append select list
-        var selectList = document.createElement("select");
-        selectList.id = "input__questionType";
-        section.appendChild(selectList);
-
         // Create and append the options to the select list
         for (var type in snapshot.val()) {
-            var option = document.createElement("option");
-            option.value = type;
-            option.text = type;
-            if(type == "text") option.selected = true;
-            selectList.appendChild(option);
+          var option = document.createElement("option");
+          option.value = type;
+          option.text = type;
+          if(type == "text") option.selected = true;
+          selectList.appendChild(option);
         }
-
-        addQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
-        section.appendChild(addQuestionButton);
-        addPredefinedQuestionGUI();
       }
-    );  
+    );
+
+    addQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
+    section.appendChild(addQuestionButton);
   }
 
   // Adds the question to the quiz and question list
@@ -156,31 +154,31 @@ const questions = (function () {
     preDefinedquestionLabel.appendChild(document.createTextNode("Spurning: "));
     section.appendChild(preDefinedquestionLabel);
 
+    // Create and append select list
+    var selectList = document.createElement("select");
+    selectList.id = "input__predefinedQuestion";
+    section.appendChild(selectList);
+
     database.ref('/questions/').once('value').then(
       function(snapshot) {
-        // Create and append select list
-        var selectList = document.createElement("select");
-        selectList.id = "input__predefinedQuestion";
-        section.appendChild(selectList);
-
         // Create and append the options
         for (var key in snapshot.val()) {
-            if(!snapshot.val()[key].isPrivate){
-              var option = document.createElement("option");
-              option.value = key;
-              option.text = snapshot.val()[key].question;
-              selectList.appendChild(option);
-            }
+          if(!snapshot.val()[key].isPrivate){
+            var option = document.createElement("option");
+            option.value = key;
+            option.text = snapshot.val()[key].question;
+            selectList.appendChild(option);
+          }
         }
-
-        const addPreDefinedQuestionButton = document.createElement('button');
-        addPreDefinedQuestionButton.addEventListener('click', () => {
-          addPredefinedQuestion();
-        });
-        addPreDefinedQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
-        section.appendChild(addPreDefinedQuestionButton);
       }
-    );  
+    );
+
+    const addPreDefinedQuestionButton = document.createElement('button');
+    addPreDefinedQuestionButton.addEventListener('click', () => {
+      addPredefinedQuestion();
+    });
+    addPreDefinedQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
+    section.appendChild(addPreDefinedQuestionButton);
   }
 
   // Adds the predefined question to the quiz
@@ -262,6 +260,8 @@ const questions = (function () {
       } else {
         console.error('No questions defined for quiz.');
       }
+      addQuestionGUI();
+      addPredefinedQuestionGUI();
     });
   }
 
