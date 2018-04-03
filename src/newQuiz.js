@@ -27,7 +27,7 @@
       questionIds[newQuestion.key] = i + 1;
     }
     database.ref(`quizzes/${quiz}`).set({
-      currentQuestion: 0,
+      currentQuestion: 1,
       questions: questionIds,
       teams: {},
     });

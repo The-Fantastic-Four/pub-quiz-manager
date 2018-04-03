@@ -11,16 +11,23 @@ const manageQuiz = (function() {
   let currentQuestion;
   let currQuest;
   let currRef;
+  let numQuestions;
 
-  // Change current question
+  // Change current question to next question
   function nextQuestion() {
-    currRef.set(currentQuestion + 1);
+    if (numQuestions >= currentQuestion + 1) {
+      currRef.set(currentQuestion + 1);
+    }
   }
 
+  // Change current question to previous question
   function previousQuestion() {
-    currRef.set(currentQuestion - 1);
+    if (currentQuestion - 1 >= 1) {
+      currRef.set(currentQuestion - 1);
+    }
   }
   
+  // Selects which question is current
   function selectQuestion() {
     const section = document.querySelector('.section__manager');
     while (section.firstChild) {
@@ -46,6 +53,7 @@ const manageQuiz = (function() {
     section.appendChild(nextButton);
   }
 
+  // Initializes the quiz manager
   function init(db, q) {
     database = db;
     quiz = q;
@@ -57,6 +65,9 @@ const manageQuiz = (function() {
         currQuest.removeChild(currQuest.firstChild)
       }
       currQuest.appendChild(document.createTextNode(currentQuestion));
+    });
+    database.ref(`quizzes/${quiz}/questions`).on('value', (snapshot) => {
+      numQuestions = snapshot.numChildren();
     });
   }
 
