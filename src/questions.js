@@ -59,7 +59,6 @@ const questions = (function () {
   }
 
   // Creates the GUI elements for creating a new question
-  //
   // return the GUI elements for creating a new question
   function addQuestionGUI() {
     const section = document.querySelector('.section__quiz');
@@ -140,7 +139,6 @@ const questions = (function () {
   }
 
   // Creates the GUI elements for adding a predefined question
-  //
   // return the GUI elements for adding a predefined question
   function addPredefinedQuestionGUI(){
     const section = document.querySelector('.section__quiz');
@@ -192,8 +190,7 @@ const questions = (function () {
         if(!snapshot.hasChild(document.getElementById("input__predefinedQuestion").value)){
           updates['/quizzes/'+quiz+'/questions/'+document.getElementById("input__predefinedQuestion").value] = snapshot.numChildren()+1;
           database.ref().update(updates);
-        }
-        else{
+        } else {
           alert("Spurning er nú þegar í þessu quizzi.")
         }
       }
@@ -211,10 +208,11 @@ const questions = (function () {
         var deletedQuestionNumber = snapshot.val()[questionId];
 
         // Generate a list of all questions below the deleted question in the quiz.
-        for(var key in snapshot.val()){
-          if(key != questionId){
-            if(snapshot.val()[key] > deletedQuestionNumber)
+        for(var key in snapshot.val()) {
+          if(key != questionId) {
+            if(snapshot.val()[key] > deletedQuestionNumber) {
               questionsByOrder.push([key, (snapshot.val()[key])]);
+            }
           }
         }
         

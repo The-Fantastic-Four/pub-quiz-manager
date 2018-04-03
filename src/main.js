@@ -40,11 +40,9 @@ firebase.auth().onAuthStateChanged(function(user){
     el.appendChild(logoutButton);
 
     getQuizzes(user.uid);
-  }
-  // When not signed in.
-  else{
-    console.log("No user signed in.");
-    window.location.replace("forbidden.html");
+  } else {
+    console.error('No user signed in.');
+    window.location.replace('forbidden.html');
   }
 });
 
@@ -82,18 +80,18 @@ function listenToWhichQuiz(quizzes) {
 }
 
 // Updates teams and quizzes
-function getQuizzes(username){
+function getQuizzes(username) {
   // Get a reference to the database service
   const quizzesRef = database.ref(`/hosts/${username}/quizzes`);
   quizzesRef.on('value', (snapshot) => {
     listenToWhichQuiz(snapshot.val());
   });
-};
+}
 
 function logout(){
   firebase.auth().signOut().then(function() {
-    window.location.replace("./");
-  }).catch(function(error) {
-    console.log("Sign out failed");
+    window.location.replace('./');
+  }).catch(function() {
+    console.error('Sign out failed');
   });
 }
