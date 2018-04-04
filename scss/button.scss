@@ -1,0 +1,11 @@
+button {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  margin: 0 5px;
+  border: 2px solid #c4c4c4;
+  font-family: 'Raleway', sans-serif;
+  
+  &:hover {
+    background-color: #eaeaea;
+  }
+}

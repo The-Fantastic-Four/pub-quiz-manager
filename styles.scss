@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+// breytur fyrir mikið notaðar stærðir
+$max-width: 1200px;
+$medium-max-width: 599px;
+$small-max-width: 399px;
+$gutter: 20px;
+
+*,
+*::before,
+*::after {
+  /* stylelint-disable-line */
+  box-sizing: inherit;
+
+  /* fjarlægjum margin og padding */
+  padding: 0;
+  margin: 0;
+}
+
+html { /* stylelint-disable-line */
+  box-sizing: border-box;
+
+  font-family: 'Raleway', helvetica, arial, sans-serif;
+  font-size: 16px;
+
+  @media (min-width: $max-width) {
+    margin: 0;
+  }
+}
+
+main { /* stylelint-disable-line */
+  max-width: $max-width;
+  margin: 0 auto;
+
+  @media (max-width: $max-width) {
+    margin-right: $gutter;
+    margin-left: $gutter;
+  }
+
+  // þar sem við erum að eiga við neikvæð margin á grid, setjum overflow-x
+  // hér sem hidden, þá fáum við ekki lárétta skrunstiku
+  overflow: hidden;
+}
+
+.link {
+  text-decoration: none;
+}
+
+@import "scss/button";
+@import "scss/grid";
+@import "scss/header";
+@import "scss/heading";
+@import "scss/overview";
+@import "scss/questions";
+

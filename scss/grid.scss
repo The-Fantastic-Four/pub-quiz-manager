@@ -1,0 +1,354 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+
+  margin-right: -($gutter / 2);
+  margin-bottom: $gutter;
+  margin-left: -($gutter / 2);
+}
+
+// mixin sem reiknar nákvæmar prósentur útfrá dálkum
+@mixin columns($col: 1) {
+  // margföldum með "1%" til að breyta gildi í prósentu gildi
+  width: ($col / 12 * 100) * 1%;
+}
+
+@mixin offset($off: 1) {
+  margin-left: ($off / 12 * 100) * 1%;
+}
+
+.col {
+  padding-right: $gutter / 2;
+  padding-left: $gutter / 2;
+
+  > .image {
+    width: 100%;
+  }
+
+  @media (max-width: $medium-max-width) {
+    margin-bottom: $gutter;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-1 {
+    @include columns(1);
+  }
+
+  &-2 {
+    @include columns(2);
+  }
+
+  &-3 {
+    @include columns(3);
+  }
+
+  &-4 {
+    @include columns(4);
+  }
+
+  &-5 {
+    @include columns(5);
+  }
+
+  &-6 {
+    @include columns(6);
+  }
+
+  &-7 {
+    @include columns(7);
+  }
+
+  &-8 {
+    @include columns(8);
+  }
+
+  &-9 {
+    @include columns(9);
+  }
+
+  &-10 {
+    @include columns(10);
+  }
+
+  &-11 {
+    @include columns(11);
+  }
+
+  &-12 {
+    @include columns(12);
+  }
+
+  &-md {
+    @media (max-width: $medium-max-width) {
+      &-1 {
+        @include columns(1);
+      }
+
+      &-2 {
+        @include columns(2);
+      }
+
+      &-3 {
+        @include columns(3);
+      }
+
+      &-4 {
+        @include columns(4);
+      }
+
+      &-5 {
+        @include columns(5);
+      }
+
+      &-6 {
+        @include columns(6);
+      }
+
+      &-7 {
+        @include columns(7);
+      }
+
+      &-8 {
+        @include columns(8);
+      }
+
+      &-9 {
+        @include columns(9);
+      }
+
+      &-10 {
+        @include columns(10);
+      }
+
+      &-11 {
+        @include columns(11);
+      }
+
+      &-12 {
+        @include columns(12);
+      }
+    }
+  }
+
+  &-sm {
+    @media (max-width: $small-max-width) {
+      &-1 {
+        @include columns(1);
+      }
+
+      &-2 {
+        @include columns(2);
+      }
+
+      &-3 {
+        @include columns(3);
+      }
+
+      &-4 {
+        @include columns(4);
+      }
+
+      &-5 {
+        @include columns(5);
+      }
+
+      &-6 {
+        @include columns(6);
+      }
+
+      &-7 {
+        @include columns(7);
+      }
+
+      &-8 {
+        @include columns(8);
+      }
+
+      &-9 {
+        @include columns(9);
+      }
+
+      &-10 {
+        @include columns(10);
+      }
+
+      &-11 {
+        @include columns(11);
+      }
+
+      &-12 {
+        @include columns(12);
+      }
+    }
+  }
+}
+
+.offset {
+  &-0 {
+    @include offset(0);
+  }
+
+  &-1 {
+    @include offset(1);
+  }
+
+  &-2 {
+    @include offset(2);
+  }
+
+  &-3 {
+    @include offset(3);
+  }
+
+  &-4 {
+    @include offset(4);
+  }
+
+  &-5 {
+    @include offset(5);
+  }
+
+  &-6 {
+    @include offset(6);
+  }
+
+  &-7 {
+    @include offset(7);
+  }
+
+  &-8 {
+    @include offset(8);
+  }
+
+  &-9 {
+    @include offset(9);
+  }
+
+  &-10 {
+    @include offset(10);
+  }
+
+  &-11 {
+    @include offset(11);
+  }
+
+  &-12 {
+    @include offset(12);
+  }
+
+  &-md {
+    @media (max-width: $medium-max-width) {
+      &-0 {
+        @include offset(0);
+      }
+
+      &-1 {
+        @include offset(1);
+      }
+
+      &-2 {
+        @include offset(2);
+      }
+
+      &-3 {
+        @include offset(3);
+      }
+
+      &-4 {
+        @include offset(4);
+      }
+
+      &-5 {
+        @include offset(5);
+      }
+
+      &-6 {
+        @include offset(6);
+      }
+
+      &-7 {
+        @include offset(7);
+      }
+
+      &-8 {
+        @include offset(8);
+      }
+
+      &-9 {
+        @include offset(9);
+      }
+
+      &-10 {
+        @include offset(10);
+      }
+
+      &-11 {
+        @include offset(11);
+      }
+
+      &-12 {
+        @include offset(12);
+      }
+    }
+  }
+
+  &-sm {
+    @media (max-width: $small-max-width) {
+      &-0 {
+        @include offset(0);
+      }
+
+      &-1 {
+        @include offset(1);
+      }
+
+      &-2 {
+        @include offset(2);
+      }
+
+      &-3 {
+        @include offset(3);
+      }
+
+      &-4 {
+        @include offset(4);
+      }
+
+      &-5 {
+        @include offset(5);
+      }
+
+      &-6 {
+        @include offset(6);
+      }
+
+      &-7 {
+        @include offset(7);
+      }
+
+      &-8 {
+        @include offset(8);
+      }
+
+      &-9 {
+        @include offset(9);
+      }
+
+      &-10 {
+        @include offset(10);
+      }
+
+      &-11 {
+        @include offset(11);
+      }
+
+      &-12 {
+        @include offset(12);
+      }
+    }
+  }
+}
