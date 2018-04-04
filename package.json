@@ -19,9 +19,9 @@
   },
   "scripts": {
     "eslint": "eslint *.js **/*.js",
-    "browser-sync": "browser-sync start --server --files index.html management.html forbidden.html lib/script.js",
+    "browser-sync": "browser-sync start --server --files index.html management.html forbidden.html lib/script.js styles.css",
     "babel": "babel src/bundle.js --watch --out-file lib/bundle.js --source-maps",
-    "dev": "npm-run-all --parallel babel browser-sync watchify",
+    "dev": "npm-run-all --parallel browser-sync watchify babel",
     "watchify": "watchify src/main.js -o src/bundle.js"
   },
   "keywords": [],

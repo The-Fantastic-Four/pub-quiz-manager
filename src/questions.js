@@ -18,10 +18,10 @@ const questions = (function () {
     }
     const header = document.createElement('h2');
     const ul = document.createElement('ul');
-    header.setAttribute('class', 'heading--two');
+    header.setAttribute('class', 'heading heading--two');
     header.appendChild(document.createTextNode('Spurningar'));
     section.appendChild(header);
-    ul.setAttribute('id', 'quiz');
+    ul.setAttribute('class', 'quiz');
     section.appendChild(ul);
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
@@ -41,16 +41,16 @@ const questions = (function () {
         const li = document.createElement('li');
 
         if (question['type'] === 'blank') {
-          li.appendChild(document.createTextNode("Spyrill les spurningu upp "));
+          li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
         } else if (question['type'] === 'text') {
-          li.appendChild(document.createTextNode(question['question']+" "));
+          li.appendChild(document.createTextNode(question['question']+' '));
         }
 
         const deleteButton = document.createElement('button');
         deleteButton.addEventListener('click', () => {
           deleteQuestionFromQuiz(questionName);
         });
-        deleteButton.appendChild(document.createTextNode("Eyða"));
+        deleteButton.appendChild(document.createTextNode('Eyða'));
         li.appendChild(deleteButton);
 
         ul.appendChild(li);
@@ -63,9 +63,10 @@ const questions = (function () {
   function addQuestionGUI() {
     const section = document.querySelector('.section__quiz');
 
-    const header = document.createElement('p');
-    header.appendChild(document.createTextNode("Búa til nýja spurningu: "));
-    section.appendChild(header);
+    const nameLabel = document.createElement('label');
+    nameLabel.setAttribute('for', 'input__question');
+    nameLabel.appendChild(document.createTextNode('Búa til nýja spurningu: '));
+    section.appendChild(nameLabel);
 
     const questionNameInput = document.createElement('input');
     questionNameInput.id = 'input__question';
@@ -73,7 +74,7 @@ const questions = (function () {
 
     const cbLabel = document.createElement('label');
     cbLabel.setAttribute('for', 'input__privacy'); 
-    cbLabel.appendChild(document.createTextNode("Sýnilegt fyrir aðra: "));
+    cbLabel.appendChild(document.createTextNode('Sýnilegt fyrir aðra: '));
     section.appendChild(cbLabel);
 
     const cb = document.createElement('input');
@@ -88,50 +89,50 @@ const questions = (function () {
 
     const typeLabel = document.createElement('label');
     typeLabel.setAttribute('for', 'input__questionType'); 
-    typeLabel.appendChild(document.createTextNode("Tegund spurningar: "));
+    typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
     section.appendChild(typeLabel);
 
     // Create and append select list
-    var selectList = document.createElement("select");
-    selectList.id = "input__questionType";
+    const selectList = document.createElement('select');
+    selectList.id = 'input__questionType';
     section.appendChild(selectList);
 
     database.ref('/questionTypes').once('value').then(
       function(snapshot) {
         // Create and append the options to the select list
-        for (var type in snapshot.val()) {
-          var option = document.createElement("option");
+        for (let type in snapshot.val()) {
+          const option = document.createElement('option');
           option.value = type;
           option.text = type;
-          if(type == "text") option.selected = true;
+          if(type === 'text') option.selected = true;
           selectList.appendChild(option);
         }
       }
     );
 
-    addQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
+    addQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
     section.appendChild(addQuestionButton);
   }
 
   // Adds the question to the quiz and question list
   function addQuestion() {
     // Generate unique ID
-    var newPostKey = database.ref().child('questions/').push().key;
+    const newPostKey = database.ref().child('questions/').push().key;
 
     // Create the question data
-    var questionData = {
-      isPrivate : !document.getElementById("input__privacy").checked,
-      question : sanitize(document.getElementById("input__question").value),
-      type : document.getElementById("input__questionType").value
+    const questionData = {
+      isPrivate : !document.getElementById('input__privacy').checked,
+      question : sanitize(document.getElementById('input__question').value),
+      type : document.getElementById('input__questionType').value
     };
 
     // Insert the data into the database on succesful promise
-    database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
+    database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
       function(snapshot) {
-        var updates = {};
+        const updates = {};
         // Create the question and add it to the quiz with appropriate order number.
-        updates['/questions/'+newPostKey] = questionData;
-        updates['/quizzes/'+quiz+'/questions/'+newPostKey] = snapshot.numChildren()+1;
+        updates[`/questions/${newPostKey}`] = questionData;
+        updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.numChildren()+1;
 
         database.ref().update(updates);
       }
@@ -143,26 +144,22 @@ const questions = (function () {
   function addPredefinedQuestionGUI(){
     const section = document.querySelector('.section__quiz');
 
-    const header = document.createElement('p');
-    header.appendChild(document.createTextNode("Bæta við út gefni spurningu: "));
-    section.appendChild(header);
-
     const preDefinedquestionLabel = document.createElement('label');
     preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion'); 
-    preDefinedquestionLabel.appendChild(document.createTextNode("Spurning: "));
+    preDefinedquestionLabel.appendChild(document.createTextNode('Bæta við spurningu úr gagnabanka: '));
     section.appendChild(preDefinedquestionLabel);
 
     // Create and append select list
-    var selectList = document.createElement("select");
-    selectList.id = "input__predefinedQuestion";
+    const selectList = document.createElement('select');
+    selectList.id = 'input__predefinedQuestion';
     section.appendChild(selectList);
 
     database.ref('/questions/').once('value').then(
       function(snapshot) {
         // Create and append the options
-        for (var key in snapshot.val()) {
+        for (let key in snapshot.val()) {
           if(!snapshot.val()[key].isPrivate){
-            var option = document.createElement("option");
+            const option = document.createElement('option');
             option.value = key;
             option.text = snapshot.val()[key].question;
             selectList.appendChild(option);
@@ -175,40 +172,39 @@ const questions = (function () {
     addPreDefinedQuestionButton.addEventListener('click', () => {
       addPredefinedQuestion();
     });
-    addPreDefinedQuestionButton.appendChild(document.createTextNode("Bæta við spurningu"));
+    addPreDefinedQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
     section.appendChild(addPreDefinedQuestionButton);
   }
 
   // Adds the predefined question to the quiz
   //
   // return The addition of the predefined question to the quiz question list.
-  function addPredefinedQuestion(){
+  function addPredefinedQuestion() {
     // Insert the data into the database on succesful promise
-    database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
+    database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
       function(snapshot) {
-        var updates = {};
-        if(!snapshot.hasChild(document.getElementById("input__predefinedQuestion").value)){
-          updates['/quizzes/'+quiz+'/questions/'+document.getElementById("input__predefinedQuestion").value] = snapshot.numChildren()+1;
+        const updates = {};
+        if(!snapshot.hasChild(document.getElementById('input__predefinedQuestion').value)){
+          updates[`/quizzes/${quiz}/questions/${document.getElementById('input__predefinedQuestion').value}`] = snapshot.numChildren()+1;
           database.ref().update(updates);
         } else {
-          alert("Spurning er nú þegar í þessu quizzi.")
+          alert('Spurning er nú þegar í þessu quizzi.')
         }
       }
     );
   }
 
   // Deletes a question from quiz
-  //
   // questionId is the id of the question that is to be removed.
   // return The removal of questionId from question list.
   function deleteQuestionFromQuiz(questionId){
-    database.ref('/quizzes/'+quiz+'/questions/').once('value').then(
+    database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
       function(snapshot) {
-        var questionsByOrder = [];
-        var deletedQuestionNumber = snapshot.val()[questionId];
+        let questionsByOrder = [];
+        const deletedQuestionNumber = snapshot.val()[questionId];
 
         // Generate a list of all questions below the deleted question in the quiz.
-        for(var key in snapshot.val()) {
+        for(let key in snapshot.val()) {
           if(key != questionId) {
             if(snapshot.val()[key] > deletedQuestionNumber) {
               questionsByOrder.push([key, (snapshot.val()[key])]);
@@ -216,25 +212,25 @@ const questions = (function () {
           }
         }
         
-        if(questionsByOrder.length > 0){
+        if(questionsByOrder.length > 0) {
           // Order the array by value (number of the question within the quiz).
-          questionsByOrder.sort(function(a,b){
+          questionsByOrder.sort(function(a,b) {
             return a[1] - b[1];
           });
 
           // Decrement the question number of the questions within the quiz 
           // that are below the deleted question to fix the order after
           // removal of a question.
-          questionsByOrder = questionsByOrder.map(function(val){
+          questionsByOrder = questionsByOrder.map(function(val) {
             val[1]--;
             return val;
           });
 
           // Create all of the update commands with updated values so it can all happen
           // in order (it's atomic).
-          var updates = {};
-          for(var i = 0; i < questionsByOrder.length; i++){
-            updates['/quizzes/'+quiz+'/questions/'+questionsByOrder[i][0]] = questionsByOrder[i][1];
+          let updates = {};
+          for(let i = 0; i < questionsByOrder.length; i++) {
+            updates[`/quizzes/${quiz}/questions/${questionsByOrder[i][0]}`] = questionsByOrder[i][1];
           }
 
           // The updates are ran (atomic operation).
@@ -242,7 +238,7 @@ const questions = (function () {
         }
 
         // The removal of the question from the quiz.
-        database.ref('/quizzes/'+quiz+'/questions/'+questionId).remove();
+        database.ref(`/quizzes/${quiz}/questions/${questionId}`).remove();
       }
     );   
   }
