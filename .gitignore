@@ -61,5 +61,5 @@ typings/
 .next
 
 # Transpiler folders and files
-/lib
+lib/*.js*
 src/bundle.js
