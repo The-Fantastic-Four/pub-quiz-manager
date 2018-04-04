@@ -1,0 +1,134 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: 'Raleway', sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  padding-bottom: 10px;
+  border-bottom: #eaeaea solid;
+}
+
+.heading {
+  font-family: 'IBM Plex Sans Condensed', sans-serif;
+  padding: 20px 0;
+}
+
+.heading--two {
+
+}
+
+.text {
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.teams li {
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+.teams li:nth-child(2n) {
+  /*display: flex;
+  flex-direction: row;
+  align-items: center;*/
+  background: #eaeaea;
+}
+
+.quiz {
+  margin-bottom: 10px;
+}
+
+/*.team__name {
+  width: 8rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}*/
+
+input {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  margin: 0 5px;
+  border: 2px solid #c4c4c4;
+  font-family: 'Raleway', sans-serif;
+}
+
+select {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  margin: 0 5px;
+  border: 2px solid #c4c4c4;
+  font-family: 'Raleway', sans-serif;
+}
+
+button {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  margin: 0 5px;
+  border: 2px solid #c4c4c4;
+  font-family: 'Raleway', sans-serif;
+}
+
+button:hover {
+  background-color: #eaeaea;
+}
+
+ul {
+  list-style: none;
+}
+
+.navbar__login__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.team__questions {
+  display: flex;
+  flex-direction: row;
+}
+
+.team__question {
+  height: 24px;
+  width: 24px;
+}
+
+.team__question--unanswered {
+  background-image: url('/img/waiting.png');
+}
+
+.team__question--answered {
+  background-image: url('/img/done.png');
+}
+
+.team__question--answered.team__question--correct {
+  background-image: url('/img/right.png');
+}
+
+.team__question--answered.team__question--incorrect {
+  background-image: url('/img/wrong.png');
+}
+
+/** responsive **/
+
+@media (min-width: 600px) {
+
+}
