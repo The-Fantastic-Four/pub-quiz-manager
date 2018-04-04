@@ -231,11 +231,18 @@ header {
   padding-bottom: 10px;
   border-bottom: #eaeaea solid; }
 
+.navbar__login__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; }
+
 .heading {
   font-family: 'IBM Plex Sans Condensed', sans-serif;
   padding: 20px 0; }
-  .heading--two {
+  .heading--one {
     font-size: 3rem; }
+  .heading--two {
+    font-size: 2rem; }
 
 .teams li {
   margin-bottom: 4px;
