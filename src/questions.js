@@ -247,6 +247,10 @@ const questions = (function () {
   function init(db, q) {
     database = db;
     quiz = q;
+
+    // Remove all questions (if there are any)
+    updateQuestionList([]);
+
     const quizRef = database.ref(`quizzes/${quiz}/questions`);
     quizRef.on('value', (snapshot) => {
       if (snapshot.exists()) {

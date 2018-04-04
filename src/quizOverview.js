@@ -67,6 +67,10 @@ const quizOverview = (function () {
   function init(db, q) {
     database = db;
     quiz = q;
+
+    // Remove all teams (if there are any)
+    updateTeams([]);
+
     const teamRef = database.ref(`quizzes/${quiz}/teams`);
     teamRef.on('value', (snapshot) => {
       updateTeams(snapshot.val());
