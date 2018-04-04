@@ -3,10 +3,11 @@
  * 
  * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
  * @author Eiður Örn Gunnarsson eog26@hi.is
- * 2. April 2018
+ * 4. April 2018
  */
 const questions = (function () {
-  
+  const firebase = require('firebase');
+
   let database;
   let quiz;
 
@@ -123,6 +124,7 @@ const questions = (function () {
     const questionData = {
       isPrivate : !document.getElementById('input__privacy').checked,
       question : sanitize(document.getElementById('input__question').value),
+      author : firebase.auth().currentUser.uid,
       type : document.getElementById('input__questionType').value
     };
 
@@ -158,7 +160,8 @@ const questions = (function () {
       function(snapshot) {
         // Create and append the options
         for (let key in snapshot.val()) {
-          if(!snapshot.val()[key].isPrivate){
+          if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid && 
+              snapshot.val()[key].question != "")){
             const option = document.createElement('option');
             option.value = key;
             option.text = snapshot.val()[key].question;

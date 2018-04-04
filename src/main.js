@@ -3,7 +3,7 @@
  * 
  * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
  * @author Eiður Örn Gunnarsson eog26@hi.is
- * 17. march 2018
+ * 4. April 2018
  */
 const firebase = require('firebase');
 const questions = require('./questions');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
       getQuizzes(user.uid);
     } else {
       console.error('No user signed in.');
-      window.location.replace('forbidden.html');
+      window.location.replace('./');
     }
   });
 });
