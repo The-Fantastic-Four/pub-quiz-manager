@@ -18,18 +18,48 @@ const quizOverview = (function () {
       }
       const header = document.createElement('h2');
       const ul = document.createElement('ul');
-      header.setAttribute('class', 'heading--two');
+      header.setAttribute('class', 'heading heading--two');
       header.appendChild(document.createTextNode('Liðin'));
       section.appendChild(header);
-      ul.setAttribute('id', 'teams');
+      ul.setAttribute('class', 'teams');
       section.appendChild(ul);
       while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
       }
       Object.keys(teams).forEach((team) => {
         const li = document.createElement('li');
-        li.appendChild(document.createTextNode(team));
+        const span = document.createElement('span');
+        span.setAttribute('class', 'team__name');
+        span.appendChild(document.createTextNode(team));
+        li.appendChild(span);
         ul.appendChild(li);
+        const questionsRef = database.ref(`quizzes/${quiz}/questions`);
+        const questionsDiv = document.createElement('div');
+        questionsDiv.setAttribute('class', 'team__questions');
+        li.appendChild(questionsDiv);
+        questionsRef.on('value', (snapshot) => {
+          while (questionsDiv.firstChild) {
+            questionsDiv.removeChild(questionsDiv.firstChild);
+          }
+          Object.keys(snapshot.val()).forEach((question) => {
+            const answerRef = database.ref(`answers/${quiz}/${question}/${team}`);
+            const questionDiv = document.createElement('div');
+            questionDiv.setAttribute('class', 'team__question team__question--unanswered');
+            questionsDiv.appendChild(questionDiv);
+            answerRef.on('value', (ansSnapshot) => {
+              const answer = ansSnapshot.val();
+              if(answer === null) {
+                questionDiv.setAttribute('class', 'team__question team__question--unanswered');
+              } else if(answer.isCorrect === true) {
+                questionDiv.setAttribute('class', 'team__question team__question--answered team__question--correct');
+              } else if (answer.isCorrect === false) {
+                questionDiv.setAttribute('class', 'team__question team__question--answered team__question--incorrect');
+              } else {
+                questionDiv.setAttribute('class', 'team__question team__question--answered');
+              }
+            });
+          });
+        });
       });
     }
   }

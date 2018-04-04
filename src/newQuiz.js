@@ -45,7 +45,7 @@
       section.removeChild(section.firstChild);
     }
     const header = document.createElement('h2');
-    header.setAttribute('class', 'heading--two');
+    header.setAttribute('class', 'heading heading--two');
     header.appendChild(document.createTextNode('Nýtt pöbbquiz'));
     section.appendChild(header);
     quizNameInput = document.createElement('input');

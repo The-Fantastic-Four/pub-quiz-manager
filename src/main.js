@@ -22,21 +22,24 @@ firebase.initializeApp(config);
 const database = firebase.database();
 
 // Handles what to do when a user is signed in or not.
-firebase.auth().onAuthStateChanged(function(user){
+firebase.auth().onAuthStateChanged(function(user) {
   // When signed in.
-  if(user){
-    var el = document.querySelector('#loggedIn');
+  if(user) {
+    const el = document.querySelector('.logged--in');
 
-    const welcomeUser = document.createElement('p');
-    if(user.displayName != null) welcomeUser.appendChild(document.createTextNode("Velkomin(n): "+user.displayName));
-    else welcomeUser.appendChild(document.createTextNode("Skráður inn notandi er: "+user.email))
+    const welcomeUser = document.createElement('span');
+    if(user.displayName != null) {
+      welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.displayName}`));
+    } else {
+      welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.email}`));
+    }
     el.appendChild(welcomeUser);
 
     const logoutButton = document.createElement('button');
     logoutButton.addEventListener('click', () => {
       logout();
     });
-    logoutButton.appendChild(document.createTextNode("Útskráning"));
+    logoutButton.appendChild(document.createTextNode('Útskráning'));
     el.appendChild(logoutButton);
 
     getQuizzes(user.uid);
@@ -72,7 +75,7 @@ function listenToWhichQuiz(quizzes) {
   
   const button = document.createElement('button');
   button.addEventListener('click', () => {
-    var user = firebase.auth().currentUser;
+    const user = firebase.auth().currentUser;
     newQuiz.init(database, initializeQuiz, user.uid);
   });
   button.appendChild(document.createTextNode('Nýtt quiz'));
@@ -88,7 +91,7 @@ function getQuizzes(username) {
   });
 }
 
-function logout(){
+function logout() {
   firebase.auth().signOut().then(function() {
     window.location.replace('./');
   }).catch(function() {

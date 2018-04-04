@@ -34,7 +34,7 @@ const manageQuiz = (function() {
       section.removeChild(section.firstChild);
     }
     const header = document.createElement('h2');
-    header.setAttribute('class', 'heading--two');
+    header.setAttribute('class', 'heading heading--two');
     header.appendChild(document.createTextNode('Möndla með quiz'));
     section.appendChild(header);
     const prevButton = document.createElement('button');

@@ -7,12 +7,14 @@
     <head>
         <title>Innskráning</title>
         <meta charset="UTF-8">
-    </head>
+        
+        <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed|Raleway" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
 
-    <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
-    <script src="src/firebaseinitialization.js"></script>
-
-    <script src="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+        <script src="src/firebaseinitialization.js"></script>
+        
+        <script src="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.js"></script>
         <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.css" />
         <script type="text/javascript">
         // FirebaseUI config.
@@ -26,16 +28,20 @@
             // Terms of service url.
             tosUrl: 'termsOfService.html'
         };
-
+        
         // Initialize the FirebaseUI Widget using Firebase.
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         // The start method will wait until the DOM is loaded.
         ui.start('#firebaseui-auth-container', uiConfig);
-    </script>
-
+        </script>
+    </head>
     <body>
-        <h1 style="text-align: center;">Skráðu þig inn til að fá aðgang að pub quiz stjórnun.</h1>
+        <h1 class="heading heading--one">Innskráning</h1>
+        <p>Til þess að nota pubQuiz þarftu að skrá þig inn. Eftir innskráningu
+            getur þú búið til quiz, sett í það spurningar sem að þú semur eða fengið
+            lánaðar spurningar frá öðrum. Þú getur haldið pubQuiz og látið
+            liðin fara yfir hjá hvort öðru, rafrænt. Góða skemmtun!
+        </p>
         <div id="firebaseui-auth-container"></div>
     </body>
-
 </html>
