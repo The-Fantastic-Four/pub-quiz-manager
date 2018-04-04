@@ -9,9 +9,72 @@ const manageQuiz = (function() {
   let database;
   let quiz;
   let currentQuestion;
-  let currQuest;
   let currRef;
+  let currStatus;
   let numQuestions;
+
+  // Select status of the quiz
+  function setStatus() {
+    const section = document.querySelector('.section__manager');
+    while (section.firstChild) {
+      section.removeChild(section.firstChild);
+    }
+    const header = document.createElement('h2');
+    header.setAttribute('class', 'heading heading--two');
+    header.appendChild(document.createTextNode('Möndla með quiz'));
+    section.appendChild(header);
+
+    const statusGo = document.createElement('button');
+    statusGo.addEventListener('click', () => {
+      startQuiz();
+    });
+    statusGo.appendChild(document.createTextNode('Byrja leik'));
+    section.appendChild(statusGo);
+
+    const statusStop = document.createElement('button');
+    statusStop.addEventListener('click', () => {
+      stopQuiz();
+    });
+    statusStop.appendChild(document.createTextNode('Stöðva leik'));
+    section.appendChild(statusStop);
+
+    const statusReview = document.createElement('button');
+    statusReview.addEventListener('click', () => {
+      reviewQuiz();
+    });
+    statusReview.appendChild(document.createTextNode('Fara yfir'));
+    section.appendChild(statusReview);
+
+    const div = document.createElement('div');
+    div.setAttribute('class', 'question__div');
+    section.appendChild(div);
+  }
+
+  function startQuiz() {
+    currStatus.set('in progress');
+    clearButtons();
+    selectQuestion();
+  }
+
+  function stopQuiz() {
+    currStatus.set('not started');
+    clearButtons();
+  }
+
+  function reviewQuiz() {
+    currStatus.set('review');
+    clearButtons();
+    currRef.set(1);
+    selectQuestion();
+  }
+  
+  // Clear question control buttons
+  function clearButtons() {
+    const div = document.querySelector('.question__div');
+    while (div.firstChild) {
+      div.removeChild(div.firstChild);
+    }
+  }
 
   // Change current question to next question
   function nextQuestion() {
@@ -29,36 +92,15 @@ const manageQuiz = (function() {
   
   // Selects which question is current
   function selectQuestion() {
-    const section = document.querySelector('.section__manager');
-    while (section.firstChild) {
-      section.removeChild(section.firstChild);
-    }
-    const header = document.createElement('h2');
-    header.setAttribute('class', 'heading heading--two');
-    header.appendChild(document.createTextNode('Möndla með quiz'));
-    section.appendChild(header);
+    const div = document.querySelector('.question__div');
     const prevButton = document.createElement('button');
     prevButton.addEventListener('click', () => {
       previousQuestion();
     });
     prevButton.appendChild(document.createTextNode('Fyrri spurning'));
-    section.appendChild(prevButton);
-    currQuest = document.createElement('span');
-    section.appendChild(currQuest);
-    const nextButton = document.createElement('button');
-    nextButton.addEventListener('click', () => {
-      nextQuestion();
-    });
-    nextButton.appendChild(document.createTextNode('Næsta spurning'));
-    section.appendChild(nextButton);
-  }
-
-  // Initializes the quiz manager
-  function init(db, q) {
-    database = db;
-    quiz = q;
-    selectQuestion();
-    currRef = database.ref(`quizzes/${quiz}/currentQuestion`);
+    div.appendChild(prevButton);
+    const currQuest = document.createElement('span');
+    div.appendChild(currQuest);
     currRef.on('value', (snapshot) => {
       currentQuestion = snapshot.val();
       while (currQuest.firstChild) {
@@ -66,9 +108,24 @@ const manageQuiz = (function() {
       }
       currQuest.appendChild(document.createTextNode(currentQuestion));
     });
+    const nextButton = document.createElement('button');
+    nextButton.addEventListener('click', () => {
+      nextQuestion();
+    });
+    nextButton.appendChild(document.createTextNode('Næsta spurning'));
+    div.appendChild(nextButton);
+  }
+
+  // Initializes the quiz manager
+  function init(db, q) {
+    database = db;
+    quiz = q;
+    setStatus();
+    currRef = database.ref(`quizzes/${quiz}/currentQuestion`);
     database.ref(`quizzes/${quiz}/questions`).on('value', (snapshot) => {
       numQuestions = snapshot.numChildren();
     });
+    currStatus = database.ref(`quizzes/${quiz}/status`);
   }
 
   return {

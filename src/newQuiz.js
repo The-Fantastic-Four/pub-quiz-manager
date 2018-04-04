@@ -30,6 +30,7 @@
       currentQuestion: 1,
       questions: questionIds,
       teams: {},
+      status: 'not started',
     });
     database.ref(`hosts/${username}/quizzes/${quiz}`).set(true);
     initializeQuiz(quiz);

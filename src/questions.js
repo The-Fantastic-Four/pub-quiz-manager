@@ -62,25 +62,27 @@ const questions = (function () {
   // return the GUI elements for creating a new question
   function addQuestionGUI() {
     const section = document.querySelector('.section__quiz');
-
+    const div = document.createElement('div');
+    div.setAttribute('class', 'questions__add');
+    section.appendChild(div);
     const nameLabel = document.createElement('label');
     nameLabel.setAttribute('for', 'input__question');
     nameLabel.appendChild(document.createTextNode('Búa til nýja spurningu: '));
-    section.appendChild(nameLabel);
+    div.appendChild(nameLabel);
 
     const questionNameInput = document.createElement('input');
     questionNameInput.id = 'input__question';
-    section.appendChild(questionNameInput);
+    div.appendChild(questionNameInput);
 
     const cbLabel = document.createElement('label');
     cbLabel.setAttribute('for', 'input__privacy'); 
     cbLabel.appendChild(document.createTextNode('Sýnilegt fyrir aðra: '));
-    section.appendChild(cbLabel);
+    div.appendChild(cbLabel);
 
     const cb = document.createElement('input');
     cb.id = 'input__privacy';
     cb.type = 'checkbox';
-    section.appendChild(cb);
+    div.appendChild(cb);
 
     const addQuestionButton = document.createElement('button');
     addQuestionButton.addEventListener('click', () => {
@@ -90,12 +92,12 @@ const questions = (function () {
     const typeLabel = document.createElement('label');
     typeLabel.setAttribute('for', 'input__questionType'); 
     typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
-    section.appendChild(typeLabel);
+    div.appendChild(typeLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__questionType';
-    section.appendChild(selectList);
+    div.appendChild(selectList);
 
     database.ref('/questionTypes').once('value').then(
       function(snapshot) {
@@ -111,7 +113,7 @@ const questions = (function () {
     );
 
     addQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    section.appendChild(addQuestionButton);
+    div.appendChild(addQuestionButton);
   }
 
   // Adds the question to the quiz and question list
@@ -143,16 +145,18 @@ const questions = (function () {
   // return the GUI elements for adding a predefined question
   function addPredefinedQuestionGUI(){
     const section = document.querySelector('.section__quiz');
-
+    const div = document.createElement('div');
+    div.setAttribute('class', 'questions__predefined');
+    section.appendChild(div);
     const preDefinedquestionLabel = document.createElement('label');
     preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion'); 
     preDefinedquestionLabel.appendChild(document.createTextNode('Bæta við spurningu úr gagnabanka: '));
-    section.appendChild(preDefinedquestionLabel);
+    div.appendChild(preDefinedquestionLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__predefinedQuestion';
-    section.appendChild(selectList);
+    div.appendChild(selectList);
 
     database.ref('/questions/').once('value').then(
       function(snapshot) {
@@ -173,7 +177,7 @@ const questions = (function () {
       addPredefinedQuestion();
     });
     addPreDefinedQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    section.appendChild(addPreDefinedQuestionButton);
+    div.appendChild(addPreDefinedQuestionButton);
   }
 
   // Adds the predefined question to the quiz
