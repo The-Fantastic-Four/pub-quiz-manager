@@ -1,0 +1,41 @@
+.teams li {
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+.teams li:nth-child(2n) {
+  /*display: flex;
+  flex-direction: row;
+  align-items: center;*/
+  background: #eaeaea;
+}
+
+.quiz {
+  margin-bottom: 10px;
+}
+
+.team__questions {
+  display: flex;
+  flex-direction: row;
+}
+
+.team__question {
+  height: 24px;
+  width: 24px;
+}
+
+.team__question--unanswered {
+  background-image: url('/img/waiting.png');
+}
+
+.team__question--answered {
+  background-image: url('/img/done.png');
+}
+
+.team__question--answered.team__question--correct {
+  background-image: url('/img/right.png');
+}
+
+.team__question--answered.team__question--incorrect {
+  background-image: url('/img/wrong.png');
+}
