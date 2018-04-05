@@ -62,6 +62,7 @@ const manageQuiz = (function() {
   }
 
   function reviewQuiz() {
+    setReviewers();
     currStatus.set('review');
     clearButtons();
     currRef.set(1);
@@ -74,6 +75,17 @@ const manageQuiz = (function() {
     while (div.firstChild) {
       div.removeChild(div.firstChild);
     }
+  }
+
+  function setReviewers() {
+    database.ref(`quizzes/${quiz}/teams`).once('value', (snapshot) => {
+      const teams = Object.keys(snapshot.val());
+      const reviewers = {};
+      for (let i = 0; i < teams.length; i++) {
+        reviewers[teams[i]] = teams[(i+1)%teams.length];
+      }
+      database.ref(`reviewers/${quiz}`).set(reviewers);
+    });
   }
 
   // Change current question to next question
