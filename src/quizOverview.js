@@ -41,7 +41,15 @@ const quizOverview = (function () {
           while (questionsDiv.firstChild) {
             questionsDiv.removeChild(questionsDiv.firstChild);
           }
-          Object.keys(snapshot.val()).forEach((question) => {
+          const questions = snapshot.val();
+          Object.keys(questions).sort((a, b) => {
+            if (questions[a] < questions[b]) {
+              return -1;
+            } else if (questions[a] > questions[b]) {
+              return 1;
+            }
+            return 0;
+          }).forEach((question) => {
             const answerRef = database.ref(`answers/${quiz}/${question}/${team}`);
             const questionDiv = document.createElement('div');
             questionDiv.setAttribute('class', 'team__question team__question--unanswered');
@@ -67,6 +75,10 @@ const quizOverview = (function () {
   function init(db, q) {
     database = db;
     quiz = q;
+
+    // Remove all teams (if there are any)
+    updateTeams([]);
+
     const teamRef = database.ref(`quizzes/${quiz}/teams`);
     teamRef.on('value', (snapshot) => {
       updateTeams(snapshot.val());

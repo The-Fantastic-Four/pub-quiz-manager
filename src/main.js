@@ -3,7 +3,7 @@
  * 
  * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
  * @author Eiður Örn Gunnarsson eog26@hi.is
- * 17. march 2018
+ * 4. April 2018
  */
 const firebase = require('firebase');
 const questions = require('./questions');
@@ -21,32 +21,34 @@ const config = {
 firebase.initializeApp(config);
 const database = firebase.database();
 
-// Handles what to do when a user is signed in or not.
-firebase.auth().onAuthStateChanged(function(user) {
-  // When signed in.
-  if(user) {
-    const el = document.querySelector('.logged--in');
+document.addEventListener('DOMContentLoaded', function() {
+  // Handles what to do when a user is signed in or not.
+  firebase.auth().onAuthStateChanged(function(user) {
+    // When signed in.
+    if(user) {
+      const el = document.querySelector('.logged--in');
 
-    const welcomeUser = document.createElement('span');
-    if(user.displayName != null) {
-      welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.displayName}`));
+      const welcomeUser = document.createElement('span');
+      if(user.displayName != null) {
+        welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.displayName}`));
+      } else {
+        welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.email}`));
+      }
+      el.appendChild(welcomeUser);
+
+      const logoutButton = document.createElement('button');
+      logoutButton.addEventListener('click', () => {
+        logout();
+      });
+      logoutButton.appendChild(document.createTextNode('Útskráning'));
+      el.appendChild(logoutButton);
+
+      getQuizzes(user.uid);
     } else {
-      welcomeUser.appendChild(document.createTextNode(`Innskráður notandi: ${user.email}`));
+      console.error('No user signed in.');
+      window.location.replace('./');
     }
-    el.appendChild(welcomeUser);
-
-    const logoutButton = document.createElement('button');
-    logoutButton.addEventListener('click', () => {
-      logout();
-    });
-    logoutButton.appendChild(document.createTextNode('Útskráning'));
-    el.appendChild(logoutButton);
-
-    getQuizzes(user.uid);
-  } else {
-    console.error('No user signed in.');
-    window.location.replace('forbidden.html');
-  }
+  });
 });
 
 // Fires up quizzes
