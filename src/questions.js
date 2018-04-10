@@ -59,8 +59,7 @@ const questions = (function () {
               const regex = /(.+)\<button\>Vista\<\/button\>\<button\>Eyða<\/button>/;
               const result = s.match(regex);
               if(result != null){
-                const content = sanitize(s.match(regex)[1]);  
-                
+                const content = sanitize(result[1]);
                 editButton.innerHTML = 'Breyta';
                 if(question['isPrivate']){
                   modifyPrivateQuestion(questionName,content);
