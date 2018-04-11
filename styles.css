@@ -260,13 +260,26 @@ header {
 .quiz {
   margin-bottom: 10px; }
 
+.team__name {
+  font-weight: bold; }
+
 .team__questions {
   display: flex;
   flex-direction: row; }
 
+.showAnswers .team__questions {
+  flex-direction: column; }
+
 .team__question {
   height: 24px;
-  width: 24px; }
+  width: 24px;
+  overflow: hidden;
+  text-indent: 32px;
+  background-repeat: no-repeat;
+  background-position: 0 center; }
+
+.showAnswers .team__question {
+  width: auto; }
 
 .team__question--unanswered {
   background-image: url("/img/waiting.png"); }
