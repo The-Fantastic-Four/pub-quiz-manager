@@ -45,6 +45,13 @@ const manageQuiz = (function() {
     statusReview.appendChild(document.createTextNode('Fara yfir'));
     section.appendChild(statusReview);
 
+    const statusComplete = document.createElement('button');
+    statusComplete.addEventListener('click', () => {
+      completeQuiz();
+    });
+    statusComplete.appendChild(document.createTextNode('Ljúka leik'));
+    section.appendChild(statusComplete);
+
     const div = document.createElement('div');
     div.setAttribute('class', 'question__div');
     section.appendChild(div);
@@ -68,7 +75,12 @@ const manageQuiz = (function() {
     currRef.set(1);
     selectQuestion();
   }
-  
+
+  function completeQuiz() {
+    currStatus.set('finished');
+    clearButtons();
+  }
+
   // Clear question control buttons
   function clearButtons() {
     const div = document.querySelector('.question__div');
