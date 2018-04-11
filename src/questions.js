@@ -390,7 +390,9 @@ const questions = (function () {
   // s is the string to be sanitized.
   // return the string s sanitized.
   function sanitize(s) {
-    return s.replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    const filterElement = document.createElement('div');
+    filterElement.appendChild(document.createTextNode(s));
+    return filterElement.innerHTML;
   }
 
   return {
