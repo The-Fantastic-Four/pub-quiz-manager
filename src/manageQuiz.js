@@ -35,7 +35,7 @@ const manageQuiz = (function() {
     statusStop.addEventListener('click', () => {
       stopQuiz();
     });
-    statusStop.appendChild(document.createTextNode('Stöðva leik'));
+    statusStop.appendChild(document.createTextNode('Gera hlé á leik'));
     section.appendChild(statusStop);
 
     const statusReview = document.createElement('button');
@@ -50,6 +50,7 @@ const manageQuiz = (function() {
       completeQuiz();
     });
     statusComplete.appendChild(document.createTextNode('Ljúka leik'));
+    statusComplete.setAttribute('title', 'Birtir notendum stigatöflu');
     section.appendChild(statusComplete);
 
     const div = document.createElement('div');
