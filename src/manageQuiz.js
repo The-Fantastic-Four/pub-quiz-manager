@@ -66,6 +66,8 @@ const manageQuiz = (function() {
 
   function stopQuiz() {
     currStatus.set('not started');
+    if(currentQuestion != undefined) 
+      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "black";
     clearButtons();
   }
 
@@ -105,6 +107,9 @@ const manageQuiz = (function() {
   function nextQuestion() {
     if (numQuestions >= currentQuestion + 1) {
       currRef.set(currentQuestion + 1);
+      const ul = document.querySelector('.quiz');
+      if(currentQuestion > 1) ul.childNodes[currentQuestion-2].style.color = "black";
+      ul.childNodes[currentQuestion-1].style.color = "green";
     }
   }
 
@@ -112,6 +117,9 @@ const manageQuiz = (function() {
   function previousQuestion() {
     if (currentQuestion - 1 >= 1) {
       currRef.set(currentQuestion - 1);
+      const ul = document.querySelector('.quiz');
+      if(currentQuestion <= numQuestions) ul.childNodes[currentQuestion].style.color = "black";
+      ul.childNodes[currentQuestion-1].style.color = "green";
     }
   }
   
@@ -119,6 +127,7 @@ const manageQuiz = (function() {
   function selectQuestion() {
     const div = document.querySelector('.question__div');
     const prevButton = document.createElement('button');
+    
     prevButton.addEventListener('click', () => {
       previousQuestion();
     });
@@ -132,6 +141,7 @@ const manageQuiz = (function() {
         currQuest.removeChild(currQuest.firstChild)
       }
       currQuest.appendChild(document.createTextNode(currentQuestion));
+      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "green";
     });
     const nextButton = document.createElement('button');
     nextButton.addEventListener('click', () => {
