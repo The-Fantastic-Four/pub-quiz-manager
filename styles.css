@@ -282,16 +282,16 @@ header {
   width: auto; }
 
 .team__question--unanswered {
-  background-image: url("/img/waiting.png"); }
+  background-image: url("./img/waiting.png"); }
 
 .team__question--answered {
-  background-image: url("/img/done.png"); }
+  background-image: url("./img/done.png"); }
 
 .team__question--answered.team__question--correct {
-  background-image: url("/img/right.png"); }
+  background-image: url("./img/right.png"); }
 
 .team__question--answered.team__question--incorrect {
-  background-image: url("/img/wrong.png"); }
+  background-image: url("./img/wrong.png"); }
 
 ul {
   list-style: none; }
