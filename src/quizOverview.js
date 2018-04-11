@@ -28,6 +28,14 @@ const quizOverview = (function () {
       }
       Object.keys(teams).forEach((team) => {
         const li = document.createElement('li');
+        li.addEventListener('click', () => {
+          const oldClass = li.getAttribute('class');
+          if (oldClass == 'showAnswers') {
+            li.setAttribute('class', 'hideAnswers');
+          } else {
+            li.setAttribute('class', 'showAnswers');
+          }
+        });
         const span = document.createElement('span');
         span.setAttribute('class', 'team__name');
         span.appendChild(document.createTextNode(team));
@@ -56,9 +64,15 @@ const quizOverview = (function () {
             questionsDiv.appendChild(questionDiv);
             answerRef.on('value', (ansSnapshot) => {
               const answer = ansSnapshot.val();
+
               if(answer === null) {
                 questionDiv.setAttribute('class', 'team__question team__question--unanswered');
-              } else if(answer.isCorrect === true) {
+                return;
+              }
+
+              questionDiv.appendChild(document.createTextNode(answer.answer));
+
+              if(answer.isCorrect === true) {
                 questionDiv.setAttribute('class', 'team__question team__question--answered team__question--correct');
               } else if (answer.isCorrect === false) {
                 questionDiv.setAttribute('class', 'team__question team__question--answered team__question--incorrect');

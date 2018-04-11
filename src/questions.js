@@ -10,6 +10,8 @@ const questions = (function () {
 
   let database;
   let quiz;
+  let questionsAdd;
+  let questionsPredefined;
 
   // Create list of questions
   function updateQuestionList(questions) {
@@ -43,7 +45,7 @@ const questions = (function () {
 
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
-        } else if (question['type'] === 'text') {
+        } else if (question['type'] === 'text' || question['type'] === 'picture') {
           li.appendChild(document.createTextNode(question['question']+' '));
         }
 
@@ -57,33 +59,50 @@ const questions = (function () {
         ul.appendChild(li);
       });
     });
+
+    questionsAdd = document.createElement('div');
+    questionsAdd.setAttribute('class', 'questions__predefined');
+    section.appendChild(questionsAdd);
+
+    questionsPredefined = document.createElement('div');
+    questionsPredefined.setAttribute('class', 'questions__add');
+    section.appendChild(questionsPredefined);
+  }
+
+  function addQuestionButton() {
+    while(questionsAdd.firstChild) {
+      questionsAdd.removeChild(questionsAdd.firstChild);
+    }
+    const questionsAddButton = document.createElement('button');
+    questionsAddButton.appendChild(document.createTextNode('Ný spurning'));
+    questionsAddButton.addEventListener('click', addQuestionGUI);
+    questionsAdd.appendChild(questionsAddButton);
   }
 
   // Creates the GUI elements for creating a new question
   // return the GUI elements for creating a new question
   function addQuestionGUI() {
-    const section = document.querySelector('.section__quiz');
-    const div = document.createElement('div');
-    div.setAttribute('class', 'questions__add');
-    section.appendChild(div);
+    while(questionsAdd.firstChild) {
+      questionsAdd.removeChild(questionsAdd.firstChild);
+    }
     const nameLabel = document.createElement('label');
     nameLabel.setAttribute('for', 'input__question');
     nameLabel.appendChild(document.createTextNode('Búa til nýja spurningu: '));
-    div.appendChild(nameLabel);
+    questionsAdd.appendChild(nameLabel);
 
     const questionNameInput = document.createElement('input');
     questionNameInput.id = 'input__question';
-    div.appendChild(questionNameInput);
+    questionsAdd.appendChild(questionNameInput);
 
     const cbLabel = document.createElement('label');
     cbLabel.setAttribute('for', 'input__privacy'); 
     cbLabel.appendChild(document.createTextNode('Sýnilegt fyrir aðra: '));
-    div.appendChild(cbLabel);
+    questionsAdd.appendChild(cbLabel);
 
     const cb = document.createElement('input');
     cb.id = 'input__privacy';
     cb.type = 'checkbox';
-    div.appendChild(cb);
+    questionsAdd.appendChild(cb);
 
     const addQuestionButton = document.createElement('button');
     addQuestionButton.addEventListener('click', () => {
@@ -93,12 +112,12 @@ const questions = (function () {
     const typeLabel = document.createElement('label');
     typeLabel.setAttribute('for', 'input__questionType'); 
     typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
-    div.appendChild(typeLabel);
+    questionsAdd.appendChild(typeLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__questionType';
-    div.appendChild(selectList);
+    questionsAdd.appendChild(selectList);
 
     database.ref('/questionTypes').once('value').then(
       function(snapshot) {
@@ -114,7 +133,7 @@ const questions = (function () {
     );
 
     addQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    div.appendChild(addQuestionButton);
+    questionsAdd.appendChild(addQuestionButton);
   }
 
   // Adds the question to the quiz and question list
@@ -139,36 +158,51 @@ const questions = (function () {
         updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.numChildren()+1;
 
         database.ref().update(updates);
+        addQuestionButton();
       }
-    );   
+    );
+  }
+
+  function addPredefinedQuestionButton() {
+    while(questionsPredefined.firstChild) {
+      questionsPredefined.removeChild(questionsPredefined.firstChild);
+    }
+    const questionsPredefinedButton = document.createElement('button');
+    questionsPredefinedButton.appendChild(document.createTextNode('Spurning úr gagnabanka'));
+    questionsPredefinedButton.addEventListener('click', addPredefinedQuestionGUI);
+    questionsPredefined.appendChild(questionsPredefinedButton);
   }
 
   // Creates the GUI elements for adding a predefined question
   // return the GUI elements for adding a predefined question
   function addPredefinedQuestionGUI(){
-    const section = document.querySelector('.section__quiz');
-    const div = document.createElement('div');
-    div.setAttribute('class', 'questions__predefined');
-    section.appendChild(div);
+    while(questionsPredefined.firstChild) {
+      questionsPredefined.removeChild(questionsPredefined.firstChild);
+    }
     const preDefinedquestionLabel = document.createElement('label');
     preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion'); 
     preDefinedquestionLabel.appendChild(document.createTextNode('Bæta við spurningu úr gagnabanka: '));
-    div.appendChild(preDefinedquestionLabel);
+    questionsPredefined.appendChild(preDefinedquestionLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__predefinedQuestion';
-    div.appendChild(selectList);
+    questionsPredefined.appendChild(selectList);
 
     database.ref('/questions/').once('value').then(
       function(snapshot) {
         // Create and append the options
         for (let key in snapshot.val()) {
           if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid && 
-              snapshot.val()[key].question != "")){
+              snapshot.val()[key].question != '')){
+            let questionText = snapshot.val()[key].question;
+            if (questionText.length > 60) {
+              questionText = questionText.substr(0, 60) + '...';
+            }
+
             const option = document.createElement('option');
             option.value = key;
-            option.text = snapshot.val()[key].question;
+            option.text = questionText;
             selectList.appendChild(option);
           }
         }
@@ -180,7 +214,7 @@ const questions = (function () {
       addPredefinedQuestion();
     });
     addPreDefinedQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    div.appendChild(addPreDefinedQuestionButton);
+    questionsPredefined.appendChild(addPreDefinedQuestionButton);
   }
 
   // Adds the predefined question to the quiz
@@ -194,6 +228,7 @@ const questions = (function () {
         if(!snapshot.hasChild(document.getElementById('input__predefinedQuestion').value)){
           updates[`/quizzes/${quiz}/questions/${document.getElementById('input__predefinedQuestion').value}`] = snapshot.numChildren()+1;
           database.ref().update(updates);
+          addPredefinedQuestionButton();
         } else {
           alert('Spurning er nú þegar í þessu quizzi.')
         }
@@ -265,8 +300,8 @@ const questions = (function () {
       } else {
         console.error('No questions defined for quiz.');
       }
-      addQuestionGUI();
-      addPredefinedQuestionGUI();
+      addQuestionButton();
+      addPredefinedQuestionButton();
     });
   }
 

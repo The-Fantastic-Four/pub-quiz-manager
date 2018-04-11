@@ -35,7 +35,7 @@ const manageQuiz = (function() {
     statusStop.addEventListener('click', () => {
       stopQuiz();
     });
-    statusStop.appendChild(document.createTextNode('Stöðva leik'));
+    statusStop.appendChild(document.createTextNode('Gera hlé á leik'));
     section.appendChild(statusStop);
 
     const statusReview = document.createElement('button');
@@ -44,6 +44,14 @@ const manageQuiz = (function() {
     });
     statusReview.appendChild(document.createTextNode('Fara yfir'));
     section.appendChild(statusReview);
+
+    const statusComplete = document.createElement('button');
+    statusComplete.addEventListener('click', () => {
+      completeQuiz();
+    });
+    statusComplete.appendChild(document.createTextNode('Ljúka leik'));
+    statusComplete.setAttribute('title', 'Birtir notendum stigatöflu');
+    section.appendChild(statusComplete);
 
     const div = document.createElement('div');
     div.setAttribute('class', 'question__div');
@@ -68,7 +76,12 @@ const manageQuiz = (function() {
     currRef.set(1);
     selectQuestion();
   }
-  
+
+  function completeQuiz() {
+    currStatus.set('finished');
+    clearButtons();
+  }
+
   // Clear question control buttons
   function clearButtons() {
     const div = document.querySelector('.question__div');
