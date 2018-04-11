@@ -43,7 +43,7 @@ const questions = (function () {
 
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
-        } else if (question['type'] === 'text') {
+        } else if (question['type'] === 'text' || question['type'] === 'picture') {
           li.appendChild(document.createTextNode(question['question']+' '));
         }
 
