@@ -165,10 +165,15 @@ const questions = (function () {
         // Create and append the options
         for (let key in snapshot.val()) {
           if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid && 
-              snapshot.val()[key].question != "")){
+              snapshot.val()[key].question != '')){
+            let questionText = snapshot.val()[key].question;
+            if (questionText.length > 60) {
+              questionText = questionText.substr(0, 60) + '...';
+            }
+
             const option = document.createElement('option');
             option.value = key;
-            option.text = snapshot.val()[key].question;
+            option.text = questionText;
             selectList.appendChild(option);
           }
         }
