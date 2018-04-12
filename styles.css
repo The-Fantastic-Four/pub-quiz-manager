@@ -260,6 +260,12 @@ header {
 .quiz {
   margin-bottom: 10px; }
 
+  .quiz p {
+    color: green;
+    font-style: italic;
+    font-size: 12px;
+  }
+
 .team__questions {
   display: flex;
   flex-direction: row; }

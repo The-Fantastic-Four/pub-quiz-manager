@@ -1,6 +1,6 @@
 /**
  * Shows the questions in the quiz
- * 
+ *
  * @author Ragnheiður Ásta Karlsdóttir rak4@hi.is
  * @author Eiður Örn Gunnarsson eog26@hi.is
  * 4. April 2018
@@ -23,6 +23,7 @@ const questions = (function () {
     header.appendChild(document.createTextNode('Spurningar'));
     section.appendChild(header);
     ul.setAttribute('class', 'quiz');
+
     section.appendChild(ul);
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
@@ -43,7 +44,7 @@ const questions = (function () {
 
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
-        } else if (question['type'] === 'text') {
+        } else if (question['type'] === 'text' || question['type'] === 'picture' ) {
           li.appendChild(document.createTextNode(question['question']+' '));
         }
 
@@ -54,6 +55,14 @@ const questions = (function () {
         deleteButton.appendChild(document.createTextNode('Eyða'));
         li.appendChild(deleteButton);
 
+        const ans = document.createElement('p');
+        if (question['answer'] != null) {
+          const t = document.createTextNode(' Svar: '+ question['answer']);
+          ans.appendChild(t);
+          var br = document.createElement("br");
+          li.appendChild(br);
+          li.appendChild(ans);
+        }
         ul.appendChild(li);
       });
     });
@@ -75,9 +84,22 @@ const questions = (function () {
     questionNameInput.id = 'input__question';
     div.appendChild(questionNameInput);
 
+    const answerLabel = document.createElement('label');
+    const br = document.createElement('br');
+    answerLabel.setAttribute('for', 'input_answer');
+    answerLabel.appendChild(document.createTextNode('Svar við spurningu: '));
+    div.appendChild(br);
+    div.appendChild(answerLabel);
+
+    const questionAnswerInput = document.createElement('input');
+    questionAnswerInput.id = 'input__answer';
+    div.appendChild(questionAnswerInput);
+
     const cbLabel = document.createElement('label');
-    cbLabel.setAttribute('for', 'input__privacy'); 
+    const bre = document.createElement('br');
+    cbLabel.setAttribute('for', 'input__privacy');
     cbLabel.appendChild(document.createTextNode('Sýnilegt fyrir aðra: '));
+    div.appendChild(bre);
     div.appendChild(cbLabel);
 
     const cb = document.createElement('input');
@@ -91,7 +113,7 @@ const questions = (function () {
     });
 
     const typeLabel = document.createElement('label');
-    typeLabel.setAttribute('for', 'input__questionType'); 
+    typeLabel.setAttribute('for', 'input__questionType');
     typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
     div.appendChild(typeLabel);
 
@@ -126,6 +148,7 @@ const questions = (function () {
     const questionData = {
       isPrivate : !document.getElementById('input__privacy').checked,
       question : sanitize(document.getElementById('input__question').value),
+      answer : document.getElementById('input__answer').value,
       author : firebase.auth().currentUser.uid,
       type : document.getElementById('input__questionType').value
     };
@@ -140,7 +163,7 @@ const questions = (function () {
 
         database.ref().update(updates);
       }
-    );   
+    );
   }
 
   // Creates the GUI elements for adding a predefined question
@@ -151,7 +174,7 @@ const questions = (function () {
     div.setAttribute('class', 'questions__predefined');
     section.appendChild(div);
     const preDefinedquestionLabel = document.createElement('label');
-    preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion'); 
+    preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion');
     preDefinedquestionLabel.appendChild(document.createTextNode('Bæta við spurningu úr gagnabanka: '));
     div.appendChild(preDefinedquestionLabel);
 
@@ -164,7 +187,7 @@ const questions = (function () {
       function(snapshot) {
         // Create and append the options
         for (let key in snapshot.val()) {
-          if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid && 
+          if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid &&
               snapshot.val()[key].question != "")){
             const option = document.createElement('option');
             option.value = key;
@@ -218,14 +241,14 @@ const questions = (function () {
             }
           }
         }
-        
+
         if(questionsByOrder.length > 0) {
           // Order the array by value (number of the question within the quiz).
           questionsByOrder.sort(function(a,b) {
             return a[1] - b[1];
           });
 
-          // Decrement the question number of the questions within the quiz 
+          // Decrement the question number of the questions within the quiz
           // that are below the deleted question to fix the order after
           // removal of a question.
           questionsByOrder = questionsByOrder.map(function(val) {
@@ -247,7 +270,7 @@ const questions = (function () {
         // The removal of the question from the quiz.
         database.ref(`/quizzes/${quiz}/questions/${questionId}`).remove();
       }
-    );   
+    );
   }
 
   // Initializes questions
