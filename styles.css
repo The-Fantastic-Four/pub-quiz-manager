@@ -258,8 +258,10 @@ header {
   background: #eaeaea; }
 
 .quiz {
-  margin-bottom: 1.5em; }
+  margin-bottom: 1.5em;
+  padding-left: 2em; }
   .quiz li {
+    padding-left: 0.3em;
     margin-bottom: 1em; }
   .quiz li.active {
     font-weight: 800; }

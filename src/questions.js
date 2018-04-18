@@ -21,7 +21,7 @@ const questions = (function () {
       section.removeChild(section.firstChild);
     }
     const header = document.createElement('h2');
-    const ul = document.createElement('ul');
+    const ul = document.createElement('ol');
     header.setAttribute('class', 'heading heading--two');
     header.appendChild(document.createTextNode('Spurningar'));
     section.appendChild(header);
@@ -106,11 +106,11 @@ const questions = (function () {
     });
 
     questionsAdd = document.createElement('div');
-    questionsAdd.setAttribute('class', 'questions__predefined');
+    questionsAdd.setAttribute('class', 'questions__add');
     section.appendChild(questionsAdd);
 
     questionsPredefined = document.createElement('div');
-    questionsPredefined.setAttribute('class', 'questions__add');
+    questionsPredefined.setAttribute('class', 'questions__predefined');
     section.appendChild(questionsPredefined);
   }
 
