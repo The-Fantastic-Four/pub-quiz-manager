@@ -258,17 +258,16 @@ header {
   background: #eaeaea; }
 
 .quiz {
-  margin-bottom: 10px; }
-
-.quiz p {
-  color: green;
-  font-style: italic;
-  font-size: 12px;
-}
+  margin-bottom: 1.5em; }
+  .quiz li {
+    margin-bottom: 1em; }
+  .quiz p {
+    color: #444;
+    font-style: italic;
+    font-size: 0.875em; }
 
 .team__name {
-  font-weight: bold; 
-}
+  font-weight: bold; }
 
 .team__questions {
   display: flex;
