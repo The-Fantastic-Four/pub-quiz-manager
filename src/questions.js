@@ -44,25 +44,25 @@ const questions = (function () {
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
         } else if (question['type'] === 'text') {
-          li.appendChild(document.createTextNode(question['question']+' '));
+          const questionText = document.createElement('span');
+          questionText.appendChild(document.createTextNode(question['question']+' '));
+          li.appendChild(questionText);
 
           const editButton = document.createElement('button');
           editButton.addEventListener('click', () => {
             // Enable editing of element containing question.
-            if(!li.isContentEditable){
-              li.contentEditable = 'true';
+            if(!questionText.isContentEditable){
+              questionText.contentEditable = 'true';
               editButton.innerHTML = 'Vista';
             }
             // When saving
             else{
-              const s = `${li.innerHTML}`.replace(/&nbsp;/g,'').trim();
-              const regex = /(.+)\<button\>Vista\<\/button\>\<button\>Eyða<\/button>/;
-              const result = s.match(regex);
+              const result = `${questionText.innerHTML}`.replace(/&nbsp;/g,'').trim();
               if(result != null){
-                const content = sanitize(result[1]);
+                const content = sanitize(result);
                 editButton.innerHTML = 'Breyta';
                 if(question['isPrivate']){
-                  modifyPrivateQuestion(questionName,content);
+                  modifyPrivateQuestion(questionName, content);
                   // Clears the list of the old element and re-displays it with the
                   // questions in correct order.
                   database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
@@ -294,7 +294,7 @@ const questions = (function () {
   // content is the new modified question.
   // return Updated the question text.
   function modifyPrivateQuestion(questionId, content){
-    database.ref(`/questions/${questionId}`).update({question:`${content}`});
+    database.ref(`/questions/${questionId}`).update({question: content});
   }
 
   // Creates a new question with the same properties besides the question itself
