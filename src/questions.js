@@ -7,6 +7,7 @@
  */
 const questions = (function () {
   const firebase = require('firebase');
+  const cloudinary = require('cloudinary');
 
   let database;
   let quiz;
@@ -54,12 +55,10 @@ const questions = (function () {
           const editButton = document.createElement('button');
           editButton.addEventListener('click', () => {
             // Enable editing of element containing question.
-            if(!questionText.isContentEditable){
+            if (!questionText.isContentEditable){
               questionText.contentEditable = 'true';
               editButton.innerHTML = 'Vista';
-            }
-            // When saving
-            else{
+            } else {
               const result = `${questionText.innerHTML}`.replace(/&nbsp;/g,'').trim();
               if(result != null){
                 const content = sanitize(result);
@@ -71,16 +70,14 @@ const questions = (function () {
                   database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
                     function(snapshot) {
                       updateQuestionList(snapshot.val());
-                      addQuestionGUI();
+                      addTextQuestionGUI();
                       addPredefinedQuestionGUI();
                     }
                   );  
-                }
-                else{
+                } else {
                   modifyANonePrivateQuestion(questionName, content, question['type']);
                 }
-              }
-              else{
+              } else {
                 alert('Vinsamlegast settu inn viðeigandi texta, upphaflega spurning var: "'+question['question']+'"');
               }
             }
@@ -122,14 +119,24 @@ const questions = (function () {
       questionsAdd.removeChild(questionsAdd.firstChild);
     }
     const questionsAddButton = document.createElement('button');
-    questionsAddButton.appendChild(document.createTextNode('Ný spurning'));
-    questionsAddButton.addEventListener('click', addQuestionGUI);
+    questionsAddButton.appendChild(document.createTextNode('Ný textaspurning'));
+    questionsAddButton.addEventListener('click', addTextQuestionGUI);
     questionsAdd.appendChild(questionsAddButton);
+
+    const questionsPicButton = document.createElement('button');
+    questionsPicButton.appendChild(document.createTextNode('Ný myndaspurning'));
+    questionsPicButton.addEventListener('click', addPicQuestionGUI);
+    questionsAdd.appendChild(questionsPicButton);
+
+    const questionsBlankButton = document.createElement('button');
+    questionsBlankButton.appendChild(document.createTextNode('Ný tóm spurning'));
+    questionsBlankButton.addEventListener('click', addBlankQuestion);
+    questionsAdd.appendChild(questionsBlankButton);
   }
 
   // Creates the GUI elements for creating a new question
   // return the GUI elements for creating a new question
-  function addQuestionGUI() {
+  function addTextQuestionGUI() {
     while(questionsAdd.firstChild) {
       questionsAdd.removeChild(questionsAdd.firstChild);
     }
@@ -167,57 +174,71 @@ const questions = (function () {
 
     const addQuestionButton = document.createElement('button');
     addQuestionButton.addEventListener('click', () => {
-      addQuestion();
+      addTextQuestion();
     });
-
-    const typeLabel = document.createElement('label');
-    typeLabel.setAttribute('for', 'input__questionType');
-    typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
-    questionsAdd.appendChild(typeLabel);
-
-    // Create and append select list
-    const selectList = document.createElement('select');
-    selectList.id = 'input__questionType';
-    questionsAdd.appendChild(selectList);
-
-    database.ref('/questionTypes').once('value').then(
-      function(snapshot) {
-        // Create and append the options to the select list
-        for (let type in snapshot.val()) {
-          const option = document.createElement('option');
-          option.value = type;
-          option.text = type;
-          if(type === 'text') option.selected = true;
-          selectList.appendChild(option);
-        }
-      }
-    );
 
     addQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
     questionsAdd.appendChild(addQuestionButton);
   }
 
+  function addPicQuestionGUI() {
+    cloudinary.openUploadWidget({
+      cloud_name: 'somethingcool',
+      upload_preset: 'carqytm4',
+      cropping: 'server',
+      folder: 'user_photos'
+    }, function(error, result) {
+      if (result.length === 1) {
+        const res = result[0];
+        addQuestion(
+          res.url,
+          null,
+          'picture',
+          null
+        );
+      }
+    });
+  }
+
+  function addBlankQuestion() {
+    addQuestion(
+      null,
+      null,
+      'blank',
+      null
+    );
+  }
+
   // Adds the question to the quiz and question list
-  function addQuestion() {
+  function addTextQuestion() {
+    addQuestion(
+      sanitize(document.getElementById('input__question').value),
+      document.getElementById('input__answer').value,
+      'text',
+      !document.getElementById('input__privacy').checked
+    );
+  }
+
+  function addQuestion(question, answer, type, isPrivate) {
     // Generate unique ID
     const newPostKey = database.ref().child('questions/').push().key;
 
     // Create the question data
     const questionData = {
-      isPrivate : !document.getElementById('input__privacy').checked,
-      question : sanitize(document.getElementById('input__question').value),
-      answer : document.getElementById('input__answer').value,
-      author : firebase.auth().currentUser.uid,
-      type : document.getElementById('input__questionType').value
+      isPrivate: isPrivate,
+      question: question,
+      answer: answer,
+      author: firebase.auth().currentUser.uid,
+      type: type,
     };
 
     // Insert the data into the database on succesful promise
     database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
-      function(snapshot) {
+      function (snapshot) {
         const updates = {};
         // Create the question and add it to the quiz with appropriate order number.
         updates[`/questions/${newPostKey}`] = questionData;
-        updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.numChildren()+1;
+        updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.numChildren() + 1;
 
         database.ref().update(updates);
         addQuestionButton();
