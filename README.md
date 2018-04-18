@@ -3,7 +3,7 @@
 ## Development setup
 First you need to clone the repository and install the dependencies, which can be done using the following bash commands
 ```bash
-git clone git@github.com:The-Fantastic-Four/pub-quiz-manager.git
+git clone https://github.com/The-Fantastic-Four/pub-quiz-manager.git
 cd pub-quiz-manager
 npm install
 ```
