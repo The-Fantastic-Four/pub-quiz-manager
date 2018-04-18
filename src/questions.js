@@ -46,7 +46,46 @@ const questions = (function () {
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
         } else if (question['type'] === 'text' || question['type'] === 'picture') {
-          li.appendChild(document.createTextNode(question['question']+' '));
+          const questionText = document.createElement('span');
+          questionText.appendChild(document.createTextNode(question['question']+' '));
+          li.appendChild(questionText);
+
+          const editButton = document.createElement('button');
+          editButton.addEventListener('click', () => {
+            // Enable editing of element containing question.
+            if(!questionText.isContentEditable){
+              questionText.contentEditable = 'true';
+              editButton.innerHTML = 'Vista';
+            }
+            // When saving
+            else{
+              const result = `${questionText.innerHTML}`.replace(/&nbsp;/g,'').trim();
+              if(result != null){
+                const content = sanitize(result);
+                editButton.innerHTML = 'Breyta';
+                if(question['isPrivate']){
+                  modifyPrivateQuestion(questionName, content);
+                  // Clears the list of the old element and re-displays it with the
+                  // questions in correct order.
+                  database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
+                    function(snapshot) {
+                      updateQuestionList(snapshot.val());
+                      addQuestionGUI();
+                      addPredefinedQuestionGUI();
+                    }
+                  );  
+                }
+                else{
+                  modifyANonePrivateQuestion(questionName, content, question['type']);
+                }
+              }
+              else{
+                alert('Vinsamlegast settu inn viðeigandi texta, upphaflega spurning var: "'+question['question']+'"');
+              }
+            }
+          });
+          editButton.appendChild(document.createTextNode('Breyta'));
+          li.appendChild(editButton);
         }
 
         const deleteButton = document.createElement('button');
@@ -281,6 +320,47 @@ const questions = (function () {
 
         // The removal of the question from the quiz.
         database.ref(`/quizzes/${quiz}/questions/${questionId}`).remove();
+      }
+    );   
+  }
+
+  // Modifies a question that is private with the new given content
+  // questionId is the id of the question that is to be modified.
+  // content is the new modified question.
+  // return Updated the question text.
+  function modifyPrivateQuestion(questionId, content){
+    database.ref(`/questions/${questionId}`).update({question: content});
+  }
+
+  // Creates a new question with the same properties besides the question itself
+  // quesitonId is the id of the question that is to be recreated.
+  // content is the new modified question.
+  // type is the ype of the question.
+  // return Replacing of the old question with new modified question within the quiz.
+  function modifyANonePrivateQuestion(questionId, content, type) {
+    // Generate unique ID
+    const newPostKey = database.ref().child('questions/').push().key;
+
+    // Create the question data
+    const questionData = {
+      isPrivate : true,
+      question : content,
+      author : firebase.auth().currentUser.uid,
+      type : type
+    };
+
+    // Insert the data into the database on succesful promise
+    database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
+      function(snapshot) {
+        const updates = {};
+        // Create the question and add it to the quiz with appropriate order number.
+        // Also removes the question that it's replacing from the quiz.
+        // This is an atomic operation.
+        updates[`/questions/${newPostKey}`] = questionData;
+        updates[`/quizzes/${quiz}/questions/${questionId}`] = null;
+        updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.val()[questionId];
+        
+        database.ref().update(updates);
       }
     );   
   }
