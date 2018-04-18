@@ -67,7 +67,7 @@ const manageQuiz = (function() {
   function stopQuiz() {
     currStatus.set('not started');
     if(currentQuestion != undefined) 
-      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "black";
+      document.querySelector('.quiz').childNodes[currentQuestion-1].setAttribute('class', '');
     clearButtons();
   }
 
@@ -108,8 +108,8 @@ const manageQuiz = (function() {
     if (numQuestions >= currentQuestion + 1) {
       currRef.set(currentQuestion + 1);
       const ul = document.querySelector('.quiz');
-      if(currentQuestion > 1) ul.childNodes[currentQuestion-2].style.color = "black";
-      ul.childNodes[currentQuestion-1].style.color = "green";
+      if(currentQuestion > 1) ul.childNodes[currentQuestion-2].setAttribute('class', '');
+      ul.childNodes[currentQuestion-1].setAttribute('class', 'active');
     }
   }
 
@@ -118,8 +118,8 @@ const manageQuiz = (function() {
     if (currentQuestion - 1 >= 1) {
       currRef.set(currentQuestion - 1);
       const ul = document.querySelector('.quiz');
-      if(currentQuestion <= numQuestions) ul.childNodes[currentQuestion].style.color = "black";
-      ul.childNodes[currentQuestion-1].style.color = "green";
+      if(currentQuestion <= numQuestions) ul.childNodes[currentQuestion].setAttribute('class', '');
+      ul.childNodes[currentQuestion-1].setAttribute('class', 'active');
     }
   }
   
@@ -141,7 +141,7 @@ const manageQuiz = (function() {
         currQuest.removeChild(currQuest.firstChild)
       }
       currQuest.appendChild(document.createTextNode(currentQuestion));
-      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "green";
+      document.querySelector('.quiz').childNodes[currentQuestion-1].setAttribute('class', 'active');
     });
     const nextButton = document.createElement('button');
     nextButton.addEventListener('click', () => {

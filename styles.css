@@ -261,6 +261,8 @@ header {
   margin-bottom: 1.5em; }
   .quiz li {
     margin-bottom: 1em; }
+  .quiz li.active {
+    font-weight: 800; }
   .quiz p {
     color: #444;
     font-style: italic;

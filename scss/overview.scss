@@ -15,6 +15,9 @@
   li {
     margin-bottom: 1em;
   }
+  li.active {
+    font-weight: 800;
+  }
   p {
     color: #444;
     font-style: italic;
