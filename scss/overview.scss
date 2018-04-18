@@ -14,28 +14,42 @@
   margin-bottom: 10px;
 }
 
+.team__name {
+  font-weight: bold;
+}
+
 .team__questions {
   display: flex;
   flex-direction: row;
+}
+.showAnswers .team__questions {
+  flex-direction: column;
 }
 
 .team__question {
   height: 24px;
   width: 24px;
+  overflow: hidden;
+  text-indent: 32px;
+  background-repeat: no-repeat;
+  background-position: 0 center;
+}
+.showAnswers .team__question {
+  width: auto;
 }
 
 .team__question--unanswered {
-  background-image: url('/img/waiting.png');
+  background-image: url('./img/waiting.png');
 }
 
 .team__question--answered {
-  background-image: url('/img/done.png');
+  background-image: url('./img/done.png');
 }
 
 .team__question--answered.team__question--correct {
-  background-image: url('/img/right.png');
+  background-image: url('./img/right.png');
 }
 
 .team__question--answered.team__question--incorrect {
-  background-image: url('/img/wrong.png');
+  background-image: url('./img/wrong.png');
 }

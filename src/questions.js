@@ -10,6 +10,8 @@ const questions = (function () {
 
   let database;
   let quiz;
+  let questionsAdd;
+  let questionsPredefined;
 
   // Create list of questions
   function updateQuestionList(questions) {
@@ -44,8 +46,47 @@ const questions = (function () {
 
         if (question['type'] === 'blank') {
           li.appendChild(document.createTextNode('Spyrill les spurningu upp '));
-        } else if (question['type'] === 'text' || question['type'] === 'picture' ) {
-          li.appendChild(document.createTextNode(question['question']+' '));
+        } else if (question['type'] === 'text' || question['type'] === 'picture') {
+          const questionText = document.createElement('span');
+          questionText.appendChild(document.createTextNode(question['question']+' '));
+          li.appendChild(questionText);
+
+          const editButton = document.createElement('button');
+          editButton.addEventListener('click', () => {
+            // Enable editing of element containing question.
+            if(!questionText.isContentEditable){
+              questionText.contentEditable = 'true';
+              editButton.innerHTML = 'Vista';
+            }
+            // When saving
+            else{
+              const result = `${questionText.innerHTML}`.replace(/&nbsp;/g,'').trim();
+              if(result != null){
+                const content = sanitize(result);
+                editButton.innerHTML = 'Breyta';
+                if(question['isPrivate']){
+                  modifyPrivateQuestion(questionName, content);
+                  // Clears the list of the old element and re-displays it with the
+                  // questions in correct order.
+                  database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
+                    function(snapshot) {
+                      updateQuestionList(snapshot.val());
+                      addQuestionGUI();
+                      addPredefinedQuestionGUI();
+                    }
+                  );  
+                }
+                else{
+                  modifyANonePrivateQuestion(questionName, content, question['type']);
+                }
+              }
+              else{
+                alert('Vinsamlegast settu inn viðeigandi texta, upphaflega spurning var: "'+question['question']+'"');
+              }
+            }
+          });
+          editButton.appendChild(document.createTextNode('Breyta'));
+          li.appendChild(editButton);
         }
 
         const deleteButton = document.createElement('button');
@@ -66,46 +107,63 @@ const questions = (function () {
         ul.appendChild(li);
       });
     });
+
+    questionsAdd = document.createElement('div');
+    questionsAdd.setAttribute('class', 'questions__predefined');
+    section.appendChild(questionsAdd);
+
+    questionsPredefined = document.createElement('div');
+    questionsPredefined.setAttribute('class', 'questions__add');
+    section.appendChild(questionsPredefined);
+  }
+
+  function addQuestionButton() {
+    while(questionsAdd.firstChild) {
+      questionsAdd.removeChild(questionsAdd.firstChild);
+    }
+    const questionsAddButton = document.createElement('button');
+    questionsAddButton.appendChild(document.createTextNode('Ný spurning'));
+    questionsAddButton.addEventListener('click', addQuestionGUI);
+    questionsAdd.appendChild(questionsAddButton);
   }
 
   // Creates the GUI elements for creating a new question
   // return the GUI elements for creating a new question
   function addQuestionGUI() {
-    const section = document.querySelector('.section__quiz');
-    const div = document.createElement('div');
-    div.setAttribute('class', 'questions__add');
-    section.appendChild(div);
+    while(questionsAdd.firstChild) {
+      questionsAdd.removeChild(questionsAdd.firstChild);
+    }
     const nameLabel = document.createElement('label');
     nameLabel.setAttribute('for', 'input__question');
     nameLabel.appendChild(document.createTextNode('Búa til nýja spurningu: '));
-    div.appendChild(nameLabel);
+    questionsAdd.appendChild(nameLabel);
 
     const questionNameInput = document.createElement('input');
     questionNameInput.id = 'input__question';
-    div.appendChild(questionNameInput);
+    questionsAdd.appendChild(questionNameInput);
 
     const answerLabel = document.createElement('label');
     const br = document.createElement('br');
     answerLabel.setAttribute('for', 'input_answer');
     answerLabel.appendChild(document.createTextNode('Svar við spurningu: '));
-    div.appendChild(br);
-    div.appendChild(answerLabel);
+    questionsAdd.appendChild(br);
+    questionsAdd.appendChild(answerLabel);
 
     const questionAnswerInput = document.createElement('input');
     questionAnswerInput.id = 'input__answer';
-    div.appendChild(questionAnswerInput);
+    questionsAdd.appendChild(questionAnswerInput);
 
     const cbLabel = document.createElement('label');
     const bre = document.createElement('br');
     cbLabel.setAttribute('for', 'input__privacy');
     cbLabel.appendChild(document.createTextNode('Sýnilegt fyrir aðra: '));
-    div.appendChild(bre);
-    div.appendChild(cbLabel);
+    questionsAdd.appendChild(bre);
+    questionsAdd.appendChild(cbLabel);
 
     const cb = document.createElement('input');
     cb.id = 'input__privacy';
     cb.type = 'checkbox';
-    div.appendChild(cb);
+    questionsAdd.appendChild(cb);
 
     const addQuestionButton = document.createElement('button');
     addQuestionButton.addEventListener('click', () => {
@@ -115,12 +173,12 @@ const questions = (function () {
     const typeLabel = document.createElement('label');
     typeLabel.setAttribute('for', 'input__questionType');
     typeLabel.appendChild(document.createTextNode('Tegund spurningar: '));
-    div.appendChild(typeLabel);
+    questionsAdd.appendChild(typeLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__questionType';
-    div.appendChild(selectList);
+    questionsAdd.appendChild(selectList);
 
     database.ref('/questionTypes').once('value').then(
       function(snapshot) {
@@ -136,7 +194,7 @@ const questions = (function () {
     );
 
     addQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    div.appendChild(addQuestionButton);
+    questionsAdd.appendChild(addQuestionButton);
   }
 
   // Adds the question to the quiz and question list
@@ -162,36 +220,51 @@ const questions = (function () {
         updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.numChildren()+1;
 
         database.ref().update(updates);
+        addQuestionButton();
       }
     );
+  }
+
+  function addPredefinedQuestionButton() {
+    while(questionsPredefined.firstChild) {
+      questionsPredefined.removeChild(questionsPredefined.firstChild);
+    }
+    const questionsPredefinedButton = document.createElement('button');
+    questionsPredefinedButton.appendChild(document.createTextNode('Spurning úr gagnabanka'));
+    questionsPredefinedButton.addEventListener('click', addPredefinedQuestionGUI);
+    questionsPredefined.appendChild(questionsPredefinedButton);
   }
 
   // Creates the GUI elements for adding a predefined question
   // return the GUI elements for adding a predefined question
   function addPredefinedQuestionGUI(){
-    const section = document.querySelector('.section__quiz');
-    const div = document.createElement('div');
-    div.setAttribute('class', 'questions__predefined');
-    section.appendChild(div);
+    while(questionsPredefined.firstChild) {
+      questionsPredefined.removeChild(questionsPredefined.firstChild);
+    }
     const preDefinedquestionLabel = document.createElement('label');
     preDefinedquestionLabel.setAttribute('for', 'input__predefinedQuestion');
     preDefinedquestionLabel.appendChild(document.createTextNode('Bæta við spurningu úr gagnabanka: '));
-    div.appendChild(preDefinedquestionLabel);
+    questionsPredefined.appendChild(preDefinedquestionLabel);
 
     // Create and append select list
     const selectList = document.createElement('select');
     selectList.id = 'input__predefinedQuestion';
-    div.appendChild(selectList);
+    questionsPredefined.appendChild(selectList);
 
     database.ref('/questions/').once('value').then(
       function(snapshot) {
         // Create and append the options
         for (let key in snapshot.val()) {
-          if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid &&
-              snapshot.val()[key].question != "")){
+          if(!snapshot.val()[key].isPrivate || (snapshot.val()[key].author == firebase.auth().currentUser.uid && 
+              snapshot.val()[key].question != '')){
+            let questionText = snapshot.val()[key].question;
+            if (questionText.length > 60) {
+              questionText = questionText.substr(0, 60) + '...';
+            }
+
             const option = document.createElement('option');
             option.value = key;
-            option.text = snapshot.val()[key].question;
+            option.text = questionText;
             selectList.appendChild(option);
           }
         }
@@ -203,7 +276,7 @@ const questions = (function () {
       addPredefinedQuestion();
     });
     addPreDefinedQuestionButton.appendChild(document.createTextNode('Bæta við spurningu'));
-    div.appendChild(addPreDefinedQuestionButton);
+    questionsPredefined.appendChild(addPreDefinedQuestionButton);
   }
 
   // Adds the predefined question to the quiz
@@ -217,6 +290,7 @@ const questions = (function () {
         if(!snapshot.hasChild(document.getElementById('input__predefinedQuestion').value)){
           updates[`/quizzes/${quiz}/questions/${document.getElementById('input__predefinedQuestion').value}`] = snapshot.numChildren()+1;
           database.ref().update(updates);
+          addPredefinedQuestionButton();
         } else {
           alert('Spurning er nú þegar í þessu quizzi.')
         }
@@ -273,6 +347,47 @@ const questions = (function () {
     );
   }
 
+  // Modifies a question that is private with the new given content
+  // questionId is the id of the question that is to be modified.
+  // content is the new modified question.
+  // return Updated the question text.
+  function modifyPrivateQuestion(questionId, content){
+    database.ref(`/questions/${questionId}`).update({question: content});
+  }
+
+  // Creates a new question with the same properties besides the question itself
+  // quesitonId is the id of the question that is to be recreated.
+  // content is the new modified question.
+  // type is the ype of the question.
+  // return Replacing of the old question with new modified question within the quiz.
+  function modifyANonePrivateQuestion(questionId, content, type) {
+    // Generate unique ID
+    const newPostKey = database.ref().child('questions/').push().key;
+
+    // Create the question data
+    const questionData = {
+      isPrivate : true,
+      question : content,
+      author : firebase.auth().currentUser.uid,
+      type : type
+    };
+
+    // Insert the data into the database on succesful promise
+    database.ref(`/quizzes/${quiz}/questions/`).once('value').then(
+      function(snapshot) {
+        const updates = {};
+        // Create the question and add it to the quiz with appropriate order number.
+        // Also removes the question that it's replacing from the quiz.
+        // This is an atomic operation.
+        updates[`/questions/${newPostKey}`] = questionData;
+        updates[`/quizzes/${quiz}/questions/${questionId}`] = null;
+        updates[`/quizzes/${quiz}/questions/${newPostKey}`] = snapshot.val()[questionId];
+        
+        database.ref().update(updates);
+      }
+    );   
+  }
+
   // Initializes questions
   function init(db, q) {
     database = db;
@@ -288,8 +403,8 @@ const questions = (function () {
       } else {
         console.error('No questions defined for quiz.');
       }
-      addQuestionGUI();
-      addPredefinedQuestionGUI();
+      addQuestionButton();
+      addPredefinedQuestionButton();
     });
   }
 
@@ -298,7 +413,9 @@ const questions = (function () {
   // s is the string to be sanitized.
   // return the string s sanitized.
   function sanitize(s) {
-    return s.replace(/</g, '&lt;').replace(/"/g, '&quot;');
+    const filterElement = document.createElement('div');
+    filterElement.appendChild(document.createTextNode(s));
+    return filterElement.innerHTML;
   }
 
   return {

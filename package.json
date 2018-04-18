@@ -24,7 +24,8 @@
     "dev": "npm-run-all --parallel browser-sync watchify babel sass",
     "eslint": "eslint *.js **/*.js",
     "sass": "node-sass styles.scss styles.css -w",
-    "watchify": "watchify src/main.js -o src/bundle.js"
+    "watchify": "watchify src/main.js -o src/bundle.js",
+    "build": "browserify src/main.js -o src/bundle.js && babel src/bundle.js --out-file lib/bundle.js && node-sass styles.scss styles.css"
   },
   "keywords": [],
   "author": "the-fantastic-four"

@@ -35,7 +35,7 @@ const manageQuiz = (function() {
     statusStop.addEventListener('click', () => {
       stopQuiz();
     });
-    statusStop.appendChild(document.createTextNode('Stöðva leik'));
+    statusStop.appendChild(document.createTextNode('Gera hlé á leik'));
     section.appendChild(statusStop);
 
     const statusReview = document.createElement('button');
@@ -44,6 +44,14 @@ const manageQuiz = (function() {
     });
     statusReview.appendChild(document.createTextNode('Fara yfir'));
     section.appendChild(statusReview);
+
+    const statusComplete = document.createElement('button');
+    statusComplete.addEventListener('click', () => {
+      completeQuiz();
+    });
+    statusComplete.appendChild(document.createTextNode('Ljúka leik'));
+    statusComplete.setAttribute('title', 'Birtir notendum stigatöflu');
+    section.appendChild(statusComplete);
 
     const div = document.createElement('div');
     div.setAttribute('class', 'question__div');
@@ -58,6 +66,8 @@ const manageQuiz = (function() {
 
   function stopQuiz() {
     currStatus.set('not started');
+    if(currentQuestion != undefined) 
+      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "black";
     clearButtons();
   }
 
@@ -68,7 +78,12 @@ const manageQuiz = (function() {
     currRef.set(1);
     selectQuestion();
   }
-  
+
+  function completeQuiz() {
+    currStatus.set('finished');
+    clearButtons();
+  }
+
   // Clear question control buttons
   function clearButtons() {
     const div = document.querySelector('.question__div');
@@ -92,6 +107,9 @@ const manageQuiz = (function() {
   function nextQuestion() {
     if (numQuestions >= currentQuestion + 1) {
       currRef.set(currentQuestion + 1);
+      const ul = document.querySelector('.quiz');
+      if(currentQuestion > 1) ul.childNodes[currentQuestion-2].style.color = "black";
+      ul.childNodes[currentQuestion-1].style.color = "green";
     }
   }
 
@@ -99,6 +117,9 @@ const manageQuiz = (function() {
   function previousQuestion() {
     if (currentQuestion - 1 >= 1) {
       currRef.set(currentQuestion - 1);
+      const ul = document.querySelector('.quiz');
+      if(currentQuestion <= numQuestions) ul.childNodes[currentQuestion].style.color = "black";
+      ul.childNodes[currentQuestion-1].style.color = "green";
     }
   }
   
@@ -106,6 +127,7 @@ const manageQuiz = (function() {
   function selectQuestion() {
     const div = document.querySelector('.question__div');
     const prevButton = document.createElement('button');
+    
     prevButton.addEventListener('click', () => {
       previousQuestion();
     });
@@ -119,6 +141,7 @@ const manageQuiz = (function() {
         currQuest.removeChild(currQuest.firstChild)
       }
       currQuest.appendChild(document.createTextNode(currentQuestion));
+      document.querySelector('.quiz').childNodes[currentQuestion-1].style.color = "green";
     });
     const nextButton = document.createElement('button');
     nextButton.addEventListener('click', () => {
