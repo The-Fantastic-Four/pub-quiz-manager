@@ -7,7 +7,6 @@
  */
 const questions = (function () {
   const firebase = require('firebase');
-  const cloudinary = require('cloudinary');
 
   let database;
   let quiz;
